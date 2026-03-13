@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
         Surrender
     }
     [Header("Game Time")]
-    [SerializeField] private float timeLimit = 180f;   // 3分
+    [SerializeField] private float timeLimit = 180f;   
     [SerializeField] private float elapsedTime = 0f;
 
     [Header("Tick")]
@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameState currentState = GameState.Ready;
     [SerializeField] private WinType winType = WinType.None;
 
+//外側からはAを呼ぶことで内部処理はGameManagerで使える　安全らしい
     public int AttackMoney => attackMoney;
     public int AttackIncome => attackIncome;
     public int DefenseMoney => defenseMoney;
@@ -57,7 +58,7 @@ public class GameManager : MonoBehaviour
     public event Action OnTimeChanged;
     public event Action<GameState> OnStateChanged;
     public event Action<WinType> OnGameEnded;
-
+    public event Action OnTickEvent;
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -112,7 +113,7 @@ public class GameManager : MonoBehaviour
     {
         attackMoney += attackIncome;
         defenseMoney += defenseIncome;
-
+        OnTickEvent?.Invoke();
         OnResourceChanged?.Invoke();
     }
 
