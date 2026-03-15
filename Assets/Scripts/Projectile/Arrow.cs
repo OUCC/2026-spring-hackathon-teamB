@@ -19,30 +19,15 @@ public class Arrow : MonoBehaviour, IProjectile
         GameManager.Instance.OnTickEvent += Move;
     }
 
-    public IShootable GetSource()
-    {
-        return _source;
-    }
+    public IShootable Source => _source;
 
-    public Vector3 GetTarget()
-    {
-        return _target;
-    }
+    public Vector3 Target => _target;
 
-    public float GetSpeed()
-    {
-        return _speed;
-    }
+    public float Speed => _speed;
 
-    public int GetDamage()
-    {
-        return _damageAmount;
-    }
+    public int Damage => _damageAmount;
 
-    public int GetRemainAttackCount()
-    {
-        return _attackCount;
-    }
+    public int RemainAttackCount => _attackCount;
 
     public void ReduceAttackCount()
     {

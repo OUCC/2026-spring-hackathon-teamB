@@ -4,19 +4,19 @@
 /// </summary>
 public interface IProjectile
 {
-    IShootable GetSource();
+    IShootable Source { get; }
 
-    Vector3 GetTarget();
+    Vector3 Target { get; }
 
-    float GetSpeed();
+    float Speed { get; }
 
-    int GetDamage();
+    int Damage { get; }
 
     /// <summary>
     /// 後何回攻撃できるかを返す。0になったら消滅する。
     /// </summary>
     /// <returns></returns>
-    int GetRemainAttackCount();
+    int RemainAttackCount { get; }
 
     void ReduceAttackCount();
 
