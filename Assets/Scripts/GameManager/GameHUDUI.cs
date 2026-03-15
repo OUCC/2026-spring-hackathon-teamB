@@ -14,29 +14,32 @@ public class GameHUDUI : MonoBehaviour
     [SerializeField] private int attackSpendCost = 10;
     [SerializeField] private int defenseSpendCost = 10;
 
-    private void OnEnable()
-    {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.OnResourceChanged += UpdateMoneyUI;
-            GameManager.Instance.OnTimeChanged += UpdateTimerUI;
-            GameManager.Instance.OnStateChanged += OnStateChanged;
-        }
-    }
+    private GameManager gm;
 
     private void Start()
     {
+        gm = GameManager.Instance;
+
+        if (gm == null)
+        {
+            Debug.LogError("GameManager.Instance が見つかりません");
+            return;
+        }
+
+        gm.OnResourceChanged += UpdateMoneyUI;
+        gm.OnTimeChanged += UpdateTimerUI;
+        gm.OnStateChanged += OnStateChanged;
+
         RefreshAll();
     }
 
     private void OnDisable()
     {
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.OnResourceChanged -= UpdateMoneyUI;
-            GameManager.Instance.OnTimeChanged -= UpdateTimerUI;
-            GameManager.Instance.OnStateChanged -= OnStateChanged;
-        }
+        if (gm == null) return;
+
+        gm.OnResourceChanged -= UpdateMoneyUI;
+        gm.OnTimeChanged -= UpdateTimerUI;
+        gm.OnStateChanged -= OnStateChanged;
     }
 
     private void OnStateChanged(GameManager.GameState state)
@@ -52,20 +55,20 @@ public class GameHUDUI : MonoBehaviour
 
     private void UpdateMoneyUI()
     {
-        if (GameManager.Instance == null) return;
+        if (gm == null) return;
 
         if (attackMoneyText != null)
-            attackMoneyText.text = $"ATK : ${GameManager.Instance.AttackMoney}";
+            attackMoneyText.text = $"ATK : ${gm.AttackMoney}";
 
         if (defenseMoneyText != null)
-            defenseMoneyText.text = $"DEF : ${GameManager.Instance.DefenseMoney}";
+            defenseMoneyText.text = $"DEF : ${gm.DefenseMoney}";
     }
 
     private void UpdateTimerUI()
     {
-        if (GameManager.Instance == null || timerText == null) return;
+        if (gm == null || timerText == null) return;
 
-        float remain = GameManager.Instance.RemainingTime;
+        float remain = gm.RemainingTime;
         int totalSeconds = Mathf.CeilToInt(remain);
 
         int minutes = totalSeconds / 60;
@@ -74,18 +77,11 @@ public class GameHUDUI : MonoBehaviour
         timerText.text = $"{minutes:00}:{seconds:00}";
     }
 
-    // =========================
-    // Button から呼ぶ用
-    // =========================
-
     public void SpendAttackMoney()
     {
-        if (GameManager.Instance == null) return;
+        if (gm == null) return;
 
-        bool success = GameManager.Instance.SpendMoney(
-            GameManager.TeamType.Attack,
-            attackSpendCost
-        );
+        bool success = gm.SpendMoney(GameManager.TeamType.Attack, attackSpendCost);
 
         if (!success)
         {
@@ -95,12 +91,9 @@ public class GameHUDUI : MonoBehaviour
 
     public void SpendDefenseMoney()
     {
-        if (GameManager.Instance == null) return;
+        if (gm == null) return;
 
-        bool success = GameManager.Instance.SpendMoney(
-            GameManager.TeamType.Defense,
-            defenseSpendCost
-        );
+        bool success = gm.SpendMoney(GameManager.TeamType.Defense, defenseSpendCost);
 
         if (!success)
         {
@@ -110,12 +103,9 @@ public class GameHUDUI : MonoBehaviour
 
     public void SpendAttackMoney(int cost)
     {
-        if (GameManager.Instance == null) return;
+        if (gm == null) return;
 
-        bool success = GameManager.Instance.SpendMoney(
-            GameManager.TeamType.Attack,
-            cost
-        );
+        bool success = gm.SpendMoney(GameManager.TeamType.Attack, cost);
 
         if (!success)
         {
@@ -125,12 +115,9 @@ public class GameHUDUI : MonoBehaviour
 
     public void SpendDefenseMoney(int cost)
     {
-        if (GameManager.Instance == null) return;
+        if (gm == null) return;
 
-        bool success = GameManager.Instance.SpendMoney(
-            GameManager.TeamType.Defense,
-            cost
-        );
+        bool success = gm.SpendMoney(GameManager.TeamType.Defense, cost);
 
         if (!success)
         {

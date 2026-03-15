@@ -72,7 +72,8 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        ChangeState(GameState.Ready);
+        ChangeState(GameState.Playing);
+        //ChangeState(GameState.Ready);
     }
 
     private void FixedUpdate()
