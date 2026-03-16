@@ -21,8 +21,8 @@ public class GridManager : MonoBehaviour
     private GridCell[,] _visualGrid;
     private CellData[,] _logicalGrid;
 
-    public event System.Action<int, int, PlaceableItemSO> OnObjectPlaced;
-    public event System.Action<int, int> OnObjectRemoved;
+    public System.Action<int, int, PlaceableItemSO> OnObjectPlaced;
+    public System.Action<int, int> OnObjectRemoved;
 
     private int _prevWidth = -1;
     private int _prevHeight = -1;
@@ -31,7 +31,6 @@ public class GridManager : MonoBehaviour
     private void Start()
     {
         GenerateGrid();
-        OnObjectPlaced += 
     }
 
     private void OnValidate()
@@ -86,8 +85,6 @@ public class GridManager : MonoBehaviour
                 _logicalGrid[x, z] = new CellData(x, z);
             }
         }
-
-        CalcDirectionToCell(-1,-1);
     }
 
     private void UpdateGridVisuals()
@@ -225,16 +222,5 @@ public class GridManager : MonoBehaviour
                 Gizmos.DrawWireCube(position, new Vector3(_cellSize, _cellSize, _cellSize));
             }
         }
-    }
-
-
-    /// <summary>
-    /// _logicalGridの各CellData.NextCellToCastleを再計算。
-    /// </summary>
-    /// <param name="x">更新されたタイルのX。<see langword="-1"/>の時は、全て再計算が必要</param>
-    /// <param name="z">更新されたタイルのZ。<see langword="-1"/>の時は、全て再計算が必要</param>
-    private void CalcDirectionToCell(int x, int z)
-    {
-        // TODO: _logicalGridの各CellData.NextCellToCastleに、城へ向かうための次のセルを設定する。
     }
 }

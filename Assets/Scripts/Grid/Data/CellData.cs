@@ -7,8 +7,6 @@ public class CellData
     public GameObject PlacedObject { get; set; }
     public PlaceableItemSO ItemType { get; set; }
 
-    public CellData NextCellToCastle { get; set; }
-
     public CellData(int x, int z)
     {
         Coordinates = new Vector2Int(x, z);
