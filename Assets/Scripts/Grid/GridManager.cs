@@ -18,11 +18,11 @@ public class GridManager : MonoBehaviour
     public int Height => _height;
     public float CellSize => _cellSize;
 
-    private Dictionary<Vector2Int, GridCell> _visualGrid;
-    private Dictionary<Vector2Int, CellData> _logicalGrid;
+    private GridCell[,] _visualGrid;
+    private CellData[,] _logicalGrid;
 
-    public System.Action<Vector2Int, PlaceableItemSO> OnObjectPlaced;
-    public System.Action<Vector2Int> OnObjectRemoved;
+    public System.Action<int, int, PlaceableItemSO> OnObjectPlaced;
+    public System.Action<int, int> OnObjectRemoved;
 
     private int _prevWidth = -1;
     private int _prevHeight = -1;
@@ -40,15 +40,15 @@ public class GridManager : MonoBehaviour
             _prevWidth = _width;
             _prevHeight = _height;
             _prevCellSize = _cellSize;
-            
+
             // Delay generation slightly to avoid warnings when destroying/instantiating in Editor
-            #if UNITY_EDITOR
+#if UNITY_EDITOR
             UnityEditor.EditorApplication.delayCall += () =>
             {
                 if (this == null) return;
                 GenerateGrid();
             };
-            #endif
+#endif
         }
         else
         {
@@ -67,8 +67,8 @@ public class GridManager : MonoBehaviour
 
         ClearGrid();
 
-        _visualGrid = new Dictionary<Vector2Int, GridCell>();
-        _logicalGrid = new Dictionary<Vector2Int, CellData>();
+        _visualGrid = new GridCell[_width, _height];
+        _logicalGrid = new CellData[_width, _height];
 
         for (int x = 0; x < _width; x++)
         {
@@ -80,9 +80,9 @@ public class GridManager : MonoBehaviour
                 cell.transform.localScale = new Vector3(_cellSize, _cellSize, _cellSize);
                 cell.Initialize(x, z);
                 cell.SetOutlineSettings(_outlineThickness, _outlineColor, _voxelResolution, _cellSize);
-                
-                _visualGrid.Add(new Vector2Int(x, z), cell);
-                _logicalGrid.Add(new Vector2Int(x, z), new CellData(x, z));
+
+                _visualGrid[x, z] = cell;
+                _logicalGrid[x, z] = new CellData(x, z);
             }
         }
     }
@@ -93,7 +93,7 @@ public class GridManager : MonoBehaviour
         foreach (var cell in GetComponentsInChildren<GridCell>())
         {
             cell.transform.localScale = new Vector3(_cellSize, _cellSize, _cellSize);
-            
+
             // Re-center just in case cell size changed and X/Z indexes exist
             Vector3 position = new Vector3(cell.X * _cellSize, 0, cell.Z * _cellSize);
             cell.transform.position = position;
@@ -101,12 +101,12 @@ public class GridManager : MonoBehaviour
             cell.SetOutlineSettings(_outlineThickness, _outlineColor, _voxelResolution, _cellSize);
         }
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         if (!Application.isPlaying)
         {
             UnityEditor.SceneView.RepaintAll();
         }
-        #endif
+#endif
     }
 
     public void ClearGrid()
@@ -124,54 +124,46 @@ public class GridManager : MonoBehaviour
                 DestroyImmediate(child);
             }
         }
-        
+
         if (_visualGrid != null)
         {
-            _visualGrid.Clear();
+            _visualGrid = null;
         }
         if (_logicalGrid != null)
         {
-            _logicalGrid.Clear();
+            _logicalGrid = null;
         }
     }
 
     public GridCell GetVisualCell(int x, int z)
     {
-        if (_visualGrid == null || _visualGrid.Count == 0) RebuildDictionaries();
-        
+        if (_visualGrid == null) RebuildDictionaries();
+
         Vector2Int key = new Vector2Int(x, z);
-        if (_visualGrid.TryGetValue(key, out GridCell cell))
-        {
-            return cell;
-        }
-        return null;
+        return _visualGrid[x, z];
     }
 
     public CellData GetCellData(int x, int z)
     {
-        if (_logicalGrid == null || _logicalGrid.Count == 0) RebuildDictionaries();
+        if (_logicalGrid == null) RebuildDictionaries();
 
         Vector2Int key = new Vector2Int(x, z);
-        if (_logicalGrid.TryGetValue(key, out CellData data))
-        {
-            return data;
-        }
-        return null;
+        return _logicalGrid[x, z];
     }
 
     private void RebuildDictionaries()
     {
-        _visualGrid = new Dictionary<Vector2Int, GridCell>();
-        _logicalGrid = new Dictionary<Vector2Int, CellData>();
+        _visualGrid = new GridCell[_width, _height];
+        _logicalGrid = new CellData[_width, _height];
 
         foreach (var cell in GetComponentsInChildren<GridCell>())
         {
             Vector2Int pos = new Vector2Int(cell.X, cell.Z);
-            if (!_visualGrid.ContainsKey(pos))
-                _visualGrid.Add(pos, cell);
-            
-            if (!_logicalGrid.ContainsKey(pos))
-                _logicalGrid.Add(pos, new CellData(cell.X, cell.Z));
+            if (_visualGrid == null)
+                _visualGrid[cell.X, cell.Z] = cell;
+
+            if (_logicalGrid == null)
+                _logicalGrid[cell.X, cell.Z] = new CellData(cell.X, cell.Z);
         }
     }
 
@@ -186,7 +178,7 @@ public class GridManager : MonoBehaviour
         GridCell visual = GetVisualCell(x, z);
         if (visual != null) visual.IsOccupied = true;
 
-        OnObjectPlaced?.Invoke(new Vector2Int(x, z), item);
+        OnObjectPlaced?.Invoke(x, z, item);
     }
 
     public void RemoveObject(int x, int z)
@@ -195,7 +187,7 @@ public class GridManager : MonoBehaviour
         if (data == null || data.PlacedObject == null) return;
 
         GameObject objToDestroy = data.PlacedObject;
-        
+
         // Handle interface notify
         IPlaceable placeable = objToDestroy.GetComponent<IPlaceable>();
         if (placeable != null) placeable.OnRemoved();
@@ -209,7 +201,7 @@ public class GridManager : MonoBehaviour
         GridCell visual = GetVisualCell(x, z);
         if (visual != null) visual.IsOccupied = false;
 
-        OnObjectRemoved?.Invoke(new Vector2Int(x, z));
+        OnObjectRemoved?.Invoke(x, z);
     }
 
     public Vector3 GetGridCenter()
