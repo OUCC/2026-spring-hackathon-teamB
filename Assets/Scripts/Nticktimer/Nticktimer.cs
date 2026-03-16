@@ -27,6 +27,10 @@ public class NTickTimer
 
     public void StartTimer(float ticks)
     {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnTickEvent-= Tick;
+        }
         durationTicks = Mathf.Max(0f, ticks);
         remainingTicks = durationTicks;
         isRunning = durationTicks > 0f;
@@ -36,14 +40,19 @@ public class NTickTimer
         if (durationTicks <= 0f)
         {
             Complete();
+            return;
+        }
+        if(GameManager.Instance != null)
+        {
+            GameManager.Instance.OnTickEvent += Tick;
         }
     }
 
-    public void Tick(float deltaTicks = 1f)
+    public void Tick()
     {
         if (!isRunning) return;
 
-        remainingTicks -= deltaTicks;
+        remainingTicks -= 1f;
         if (remainingTicks < 0f) remainingTicks = 0f;
 
         OnTickChanged?.Invoke(remainingTicks, durationTicks);
@@ -58,6 +67,11 @@ public class NTickTimer
     {
         isRunning = false;
         remainingTicks = 0f;
+        if(GameManager.Instance != null)
+        {
+            GameManager.Instance.OnTickEvent -= Tick;
+        }
         OnCompleted?.Invoke();
     }
+    
 }
