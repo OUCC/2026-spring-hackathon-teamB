@@ -31,7 +31,8 @@ public class GridManager : MonoBehaviour
     private void Start()
     {
         GenerateGrid();
-        OnObjectPlaced += 
+        OnObjectPlaced += (x, z, item) => CalcDirectionToCell(x, z);
+        OnObjectRemoved += (x, z) => CalcDirectionToCell(x, z);
     }
 
     private void OnValidate()
@@ -87,7 +88,7 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        CalcDirectionToCell(-1,-1);
+        CalcDirectionToCell(-1, -1);
     }
 
     private void UpdateGridVisuals()
