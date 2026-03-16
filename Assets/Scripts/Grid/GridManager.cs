@@ -89,7 +89,7 @@ public class GridManager : MonoBehaviour
 
     private void UpdateGridVisuals()
     {
-        // Even if Dictionary is lost due to script recompile, grab children directly 
+        // Even if Array is lost due to script recompile, grab children directly 
         foreach (var cell in GetComponentsInChildren<GridCell>())
         {
             cell.transform.localScale = new Vector3(_cellSize, _cellSize, _cellSize);
@@ -137,7 +137,7 @@ public class GridManager : MonoBehaviour
 
     public GridCell GetVisualCell(int x, int z)
     {
-        if (_visualGrid == null) RebuildDictionaries();
+        if (_visualGrid == null) RebuildGridArrays();
 
         Vector2Int key = new Vector2Int(x, z);
         return _visualGrid[x, z];
@@ -145,13 +145,13 @@ public class GridManager : MonoBehaviour
 
     public CellData GetCellData(int x, int z)
     {
-        if (_logicalGrid == null) RebuildDictionaries();
+        if (_logicalGrid == null) RebuildGridArrays();
 
         Vector2Int key = new Vector2Int(x, z);
         return _logicalGrid[x, z];
     }
 
-    private void RebuildDictionaries()
+    private void RebuildGridArrays()
     {
         _visualGrid = new GridCell[_width, _height];
         _logicalGrid = new CellData[_width, _height];
