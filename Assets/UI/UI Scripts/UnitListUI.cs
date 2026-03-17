@@ -57,5 +57,7 @@ public class UnitListUI : MonoBehaviour
         }
         selectedCard = targetCard;
         selectedCard.AddToClassList("unit-card-selected");
+        // 選択されたカードを前面に表示するが、これだと最後尾に移動してしまう
+        //selectedCard.BringToFront(); 
     }
 }
