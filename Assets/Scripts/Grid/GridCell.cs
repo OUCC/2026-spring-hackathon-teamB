@@ -11,6 +11,8 @@ public class GridCell : MonoBehaviour
     [SerializeField] private Color _hoverColor = Color.cyan;
     [SerializeField] private Color _occupiedHoverColor = Color.red;
 
+    public CellData CellData { get; set; }
+
     private void Awake()
     {
         if (_renderer == null)

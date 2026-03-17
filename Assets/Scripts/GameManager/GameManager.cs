@@ -24,7 +24,10 @@ public class GameManager : MonoBehaviour
         DefenseWin,
         Surrender
     }
+    [SerializeField] private GridManager _gridManager;
+    public GridManager GridManager => _gridManager;
     [Header("Game Time")]
+    
     [SerializeField] private float timeLimit = 180f;   
     [SerializeField] private float elapsedTime = 0f;
 
