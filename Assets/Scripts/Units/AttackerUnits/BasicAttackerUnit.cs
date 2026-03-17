@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 地面を歩く近接攻撃ユニット(=足軽)
 /// </summary>
-public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget
+public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget, IMovable
 {
     [SerializeField] protected AttackerUnitData unitData;
     protected float currentHealth;
@@ -14,6 +14,8 @@ public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget
 
     private Action<ITarget> _onDied;
     public Action<ITarget> OnDied { get => _onDied; }
+
+    public float MoveSpeed => unitData.MoveSpeed;
 
     public virtual void Initialize(IMoveStrategy moveStrategy = null, IAttackStrategy attackStrategy = null)
     {
