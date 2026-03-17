@@ -1,9 +1,12 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/HUD/HUD.uss?fileID=7433441132597879392&amp;guid=5c2d77abef2a0414885e0140a65c1985&amp;type=3#HUD"/>
     <ui:VisualElement name="HUDContainer" style="flex-grow: 1;">
         <ui:VisualElement name="TimerContainer" style="width: 200px; height: 100px; align-self: center; top: 30px; background-color: rgba(0, 0, 0, 0.38);">
             <ui:Label text="残り時間" name="TextLabel" style="align-items: flex-start; align-self: center; font-size: 25px; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-align: upper-center;"/>
             <ui:Label text="3：００" name="TimeLabel" style="align-self: center; font-size: 30px; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-align: upper-center; align-content: flex-start;"/>
         </ui:VisualElement>
-        <ui:VisualElement name="AttackSideContainer" style="flex-grow: 1;"/>
+        <ui:VisualElement name="AttackSideContainer" style="flex-grow: 1; position: absolute; align-self: flex-end; top: 30px; right: 30px;">
+            <ui:VisualElement name="UnitList" style="flex-grow: 1; flex-direction: row-reverse; margin-top: 6px; margin-right: 6px; margin-bottom: 6px; margin-left: 6px; background-color: rgba(0, 0, 0, 0.4);"/>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

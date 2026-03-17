@@ -348,8 +348,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1794737420}
   - component: {fileID: 1794737419}
-  - component: {fileID: 1794737418}
   - component: {fileID: 1794737417}
+  - component: {fileID: 1794737422}
+  - component: {fileID: 1794737423}
   m_Layer: 0
   m_Name: HUD_Document
   m_TagString: Untagged
@@ -369,19 +370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8750c65fa62f2a438b7ef3001e796bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TimerTest
-  targetTimerUI: {fileID: 1794737418}
---- !u!114 &1794737418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1794737416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8296682033b559d46a030ae9c3dd6ab3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TimerUI
+  targetTimerUI: {fileID: 1794737422}
 --- !u!114 &1794737419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -420,6 +409,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1794737422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794737416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90250df4e4e75b145a0fec1d5093b395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TimerUI
+--- !u!114 &1794737423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1794737416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 250eeaa8ddd0dee47aff5d4137607d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitSelectionUI
+  unitCardTemplate: {fileID: 9197481963319205126, guid: 6d4cb6d06f6252740a462e24cac41496, type: 3}
+  unitDataList:
+  - {fileID: 11400000, guid: c9dcb6ec025cc0f49bf2339caf494483, type: 2}
+  - {fileID: 11400000, guid: c973b4882289c1248bd3b3de49d8dcce, type: 2}
+  - {fileID: 11400000, guid: 522970ca60c4cc148a574e54cdcb5abe, type: 2}
+  - {fileID: 11400000, guid: c9dcb6ec025cc0f49bf2339caf494483, type: 2}
+  - {fileID: 11400000, guid: c9dcb6ec025cc0f49bf2339caf494483, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
