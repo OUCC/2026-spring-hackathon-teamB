@@ -136,7 +136,10 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    public GridCell GetVisualCell(int x, int z)
+    [System.Obsolete("Use GetGridCell instead. This method will be removed in future versions.")]
+    public GridCell GetVisualCell(int x, int z) => GetGridCell(x, z);
+
+    public GridCell GetGridCell(int x, int z)
     {
         if (_visualGrid == null) RebuildGridArrays();
         return _visualGrid[x, z];
@@ -171,7 +174,7 @@ public class GridManager : MonoBehaviour
         data.PlacedObject = spawnedObject;
         data.ItemType = item;
 
-        GridCell visual = GetVisualCell(x, z);
+        GridCell visual = GetGridCell(x, z);
         if (visual != null) visual.IsOccupied = true;
 
         OnObjectPlaced?.Invoke(x, z, item);
@@ -194,7 +197,7 @@ public class GridManager : MonoBehaviour
         data.PlacedObject = null;
         data.ItemType = null;
 
-        GridCell visual = GetVisualCell(x, z);
+        GridCell visual = GetGridCell(x, z);
         if (visual != null) visual.IsOccupied = false;
 
         OnObjectRemoved?.Invoke(x, z);
