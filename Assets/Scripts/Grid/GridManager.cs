@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteAlways]
@@ -82,7 +81,8 @@ public class GridManager : MonoBehaviour
                 cell.SetOutlineSettings(_outlineThickness, _outlineColor, _voxelResolution, _cellSize);
 
                 _visualGrid[x, z] = cell;
-                _logicalGrid[x, z] = new CellData(x, z);
+                _logicalGrid[x, z] = new CellData(x, z, cell);
+                cell.CellData = _logicalGrid[x, z];
             }
         }
     }
@@ -95,7 +95,7 @@ public class GridManager : MonoBehaviour
             cell.transform.localScale = new Vector3(_cellSize, _cellSize, _cellSize);
 
             // Re-center just in case cell size changed and X/Z indexes exist
-            Vector3 position = new Vector3(cell.X * _cellSize, 0, cell.Z * _cellSize);
+            Vector3 position = new(cell.X * _cellSize, 0, cell.Z * _cellSize);
             cell.transform.position = position;
 
             cell.SetOutlineSettings(_outlineThickness, _outlineColor, _voxelResolution, _cellSize);
@@ -135,19 +135,18 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    public GridCell GetVisualCell(int x, int z)
+    [System.Obsolete("Use GetGridCell instead. This method will be removed in future versions.")]
+    public GridCell GetVisualCell(int x, int z) => GetGridCell(x, z);
+
+    public GridCell GetGridCell(int x, int z)
     {
         if (_visualGrid == null) RebuildGridArrays();
-
-        Vector2Int key = new Vector2Int(x, z);
         return _visualGrid[x, z];
     }
 
     public CellData GetCellData(int x, int z)
     {
         if (_logicalGrid == null) RebuildGridArrays();
-
-        Vector2Int key = new Vector2Int(x, z);
         return _logicalGrid[x, z];
     }
 
@@ -158,12 +157,14 @@ public class GridManager : MonoBehaviour
 
         foreach (var cell in GetComponentsInChildren<GridCell>())
         {
-            Vector2Int pos = new Vector2Int(cell.X, cell.Z);
             if (_visualGrid == null)
                 _visualGrid[cell.X, cell.Z] = cell;
 
             if (_logicalGrid == null)
-                _logicalGrid[cell.X, cell.Z] = new CellData(cell.X, cell.Z);
+            {
+                _logicalGrid[cell.X, cell.Z] = new CellData(cell.X, cell.Z, cell);
+                cell.CellData = _logicalGrid[cell.X, cell.Z];
+            }
         }
     }
 
@@ -175,7 +176,7 @@ public class GridManager : MonoBehaviour
         data.PlacedObject = spawnedObject;
         data.ItemType = item;
 
-        GridCell visual = GetVisualCell(x, z);
+        GridCell visual = GetGridCell(x, z);
         if (visual != null) visual.IsOccupied = true;
 
         OnObjectPlaced?.Invoke(x, z, item);
@@ -190,7 +191,7 @@ public class GridManager : MonoBehaviour
 
         // Handle interface notify
         IPlaceable placeable = objToDestroy.GetComponent<IPlaceable>();
-        if (placeable != null) placeable.OnRemoved();
+        placeable?.OnRemoved();
 
         if (Application.isPlaying) Destroy(objToDestroy);
         else DestroyImmediate(objToDestroy);
@@ -198,7 +199,7 @@ public class GridManager : MonoBehaviour
         data.PlacedObject = null;
         data.ItemType = null;
 
-        GridCell visual = GetVisualCell(x, z);
+        GridCell visual = GetGridCell(x, z);
         if (visual != null) visual.IsOccupied = false;
 
         OnObjectRemoved?.Invoke(x, z);
@@ -217,7 +218,7 @@ public class GridManager : MonoBehaviour
         {
             for (int z = 0; z < _height; z++)
             {
-                Vector3 position = new Vector3(x * _cellSize, 0, z * _cellSize);
+                Vector3 position = new(x * _cellSize, 0, z * _cellSize);
                 // The position is at the center of the cell
                 Gizmos.DrawWireCube(position, new Vector3(_cellSize, _cellSize, _cellSize));
             }
