@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using UnityEngine;
 
 [ExecuteAlways]
@@ -74,7 +75,7 @@ public class GridManager : MonoBehaviour
         {
             for (int z = 0; z < _height; z++)
             {
-                Vector3 position = new Vector3(x * _cellSize, 0, z * _cellSize);
+                Vector3 position = new(x * _cellSize, 0, z * _cellSize);
                 GridCell cell = Instantiate(_cellPrefab, position, Quaternion.identity, transform);
                 cell.name = $"Cell_{x}_{z}";
                 cell.transform.localScale = new Vector3(_cellSize, _cellSize, _cellSize);
@@ -95,7 +96,7 @@ public class GridManager : MonoBehaviour
             cell.transform.localScale = new Vector3(_cellSize, _cellSize, _cellSize);
 
             // Re-center just in case cell size changed and X/Z indexes exist
-            Vector3 position = new Vector3(cell.X * _cellSize, 0, cell.Z * _cellSize);
+            Vector3 position = new(cell.X * _cellSize, 0, cell.Z * _cellSize);
             cell.transform.position = position;
 
             cell.SetOutlineSettings(_outlineThickness, _outlineColor, _voxelResolution, _cellSize);
@@ -138,16 +139,12 @@ public class GridManager : MonoBehaviour
     public GridCell GetVisualCell(int x, int z)
     {
         if (_visualGrid == null) RebuildGridArrays();
-
-        Vector2Int key = new Vector2Int(x, z);
         return _visualGrid[x, z];
     }
 
     public CellData GetCellData(int x, int z)
     {
         if (_logicalGrid == null) RebuildGridArrays();
-
-        Vector2Int key = new Vector2Int(x, z);
         return _logicalGrid[x, z];
     }
 
@@ -158,7 +155,6 @@ public class GridManager : MonoBehaviour
 
         foreach (var cell in GetComponentsInChildren<GridCell>())
         {
-            Vector2Int pos = new Vector2Int(cell.X, cell.Z);
             if (_visualGrid == null)
                 _visualGrid[cell.X, cell.Z] = cell;
 
@@ -190,7 +186,7 @@ public class GridManager : MonoBehaviour
 
         // Handle interface notify
         IPlaceable placeable = objToDestroy.GetComponent<IPlaceable>();
-        if (placeable != null) placeable.OnRemoved();
+        placeable?.OnRemoved();
 
         if (Application.isPlaying) Destroy(objToDestroy);
         else DestroyImmediate(objToDestroy);
@@ -217,7 +213,7 @@ public class GridManager : MonoBehaviour
         {
             for (int z = 0; z < _height; z++)
             {
-                Vector3 position = new Vector3(x * _cellSize, 0, z * _cellSize);
+                Vector3 position = new(x * _cellSize, 0, z * _cellSize);
                 // The position is at the center of the cell
                 Gizmos.DrawWireCube(position, new Vector3(_cellSize, _cellSize, _cellSize));
             }
