@@ -236,6 +236,59 @@ public class GridManager : MonoBehaviour
     /// <param name="z">更新されたタイルのZ。<see langword="-1"/>の時は、全て再計算が必要</param>
     private void CalcDirectionToCell(int x, int z)
     {
+        if(_logicalGrid == null) return;
+        CellData castleCell = Castle;
+        /*for(int i = 0; i < _width; i++)
+        {
+            for(int j=0; j< _height; j++)
+            {
+                _logicalGrid[i, j].NextCellToCastle = null;
+            }
+            
+        }
+        */
+        Queue<CellData> queue = new Queue<CellData>();
+        queue.Enqueue(castleCell);
+        int[,] directions =
+        {
+            {1,0},
+            {-1,0},
+            {0,1},
+            {0,-1}
+        };
+        while(queue.Count >0)
+        {
+            CellData nownode = queue.Dequeue();
+            for(int dir = 0; dir < 4; dir++)
+            {
+                int nextX = nownode.Coordinates.x + directions[dir,0];
+                int nextZ = nownode.Coordinates.y + directions[dir,1];
+                if(nextX < 0 || nextX >= _width || nextZ < 0 || nextZ >= _height)
+                {
+                    continue;
+                }
+                if(CanEnter(nextX, nextZ))
+                {
+                    CellData nextNode = GetCellData(nextX, nextZ);
+                    if (nextNode.NextCellToCastle == null && nextNode != castleCell)
+                    {
+                        nextNode.NextCellToCastle = nownode;
+                        queue.Enqueue(nextNode);
+                    }
+                }
+            }
+        }
         // TODO: _logicalGridの各CellData.NextCellToCastleに、城へ向かうための次のセルを設定する。
+    }
+    public CellData Castle
+    {
+        get
+        {
+            return GetCellData(_width / 2, _height / 2);
+        }
+    }
+    public bool CanEnter(int x,int z)
+    {
+        return true;
     }
 }
