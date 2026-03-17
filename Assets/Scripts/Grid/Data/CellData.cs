@@ -12,6 +12,8 @@ public class CellData
 
     public int X { get; private set; }
     public int Z { get; private set; }
+    public CellData NextCellToCastle { get; set; }
+
     public CellData(int x, int z, GridCell gridCell)
     {
         X = x;
