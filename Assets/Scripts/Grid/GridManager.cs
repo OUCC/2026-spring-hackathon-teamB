@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using UnityEngine;
 
 [ExecuteAlways]
@@ -262,8 +264,8 @@ public class GridManager : MonoBehaviour
             CellData nownode = queue.Dequeue();
             for(int dir = 0; dir < 4; dir++)
             {
-                int nextX = nownode.Coordinates.x + directions[dir,0];
-                int nextZ = nownode.Coordinates.y + directions[dir,1];
+                int nextX = nownode.X + directions[dir,0];
+                int nextZ = nownode.X + directions[dir,1];
                 if(nextX < 0 || nextX >= _width || nextZ < 0 || nextZ >= _height)
                 {
                     continue;
