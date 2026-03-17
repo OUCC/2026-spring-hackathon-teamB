@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="HUDContainer" style="flex-grow: 1;">
+        <ui:VisualElement name="TimerContainer" style="width: 200px; height: 100px; align-self: center; top: 30px; background-color: rgba(0, 0, 0, 0.38);">
+            <ui:Label text="残り時間" name="TextLabel" style="align-items: flex-start; align-self: center; font-size: 25px; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-align: upper-center;"/>
+            <ui:Label text="3：００" name="TimeLabel" style="align-self: center; font-size: 30px; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-align: upper-center; align-content: flex-start;"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="AttackSideContainer" style="flex-grow: 1;"/>
+    </ui:VisualElement>
+</ui:UXML>
