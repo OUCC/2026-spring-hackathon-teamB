@@ -8,6 +8,7 @@ public class UnitListUI : MonoBehaviour
     [SerializeField] private List<UnitData> unitDataList;      // データのリスト (SO)
 
     private VisualElement unitList; // カードを並べる親要素の"UnitList"VisualElemntを入れる
+    private VisualElement selectedCard;
 
     private void OnEnable()
     {
@@ -41,9 +42,20 @@ public class UnitListUI : MonoBehaviour
                 newCard.Q<VisualElement>("UnitImage").style.backgroundImage =
                     new StyleBackground(unitData.unitImage);
             }
-
+            // クリックされたときの処理
+            newCard.RegisterCallback<ClickEvent>(evt => SelectCard(newCard));
             // 親要素に追加して画面に表示
             unitList.Add(newCard);
         }
+    }
+
+    private void SelectCard(VisualElement targetCard)
+    {
+        if (selectedCard != null)
+        {
+            selectedCard.RemoveFromClassList("unit-card-selected");
+        }
+        selectedCard = targetCard;
+        selectedCard.AddToClassList("unit-card-selected");
     }
 }
