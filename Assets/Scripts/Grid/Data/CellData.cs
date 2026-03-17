@@ -8,11 +8,14 @@ public class CellData
     public GameObject PlacedObject { get; set; }
     public PlaceableItemSO ItemType { get; set; }
 
+    public GridCell GridCell { get; set; }
+
     public int X { get; private set; }
     public int Z { get; private set; }
-    public CellData(int x, int z)
+    public CellData(int x, int z, GridCell gridCell)
     {
         X = x;
         Z = z;
+        GridCell = gridCell;
     }
 }

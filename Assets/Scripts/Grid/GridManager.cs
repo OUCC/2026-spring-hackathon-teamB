@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 using UnityEngine;
 
 [ExecuteAlways]
@@ -75,7 +73,7 @@ public class GridManager : MonoBehaviour
         {
             for (int z = 0; z < _height; z++)
             {
-                Vector3 position = new(x * _cellSize, 0, z * _cellSize);
+                Vector3 position = new Vector3(x * _cellSize, 0, z * _cellSize);
                 GridCell cell = Instantiate(_cellPrefab, position, Quaternion.identity, transform);
                 cell.name = $"Cell_{x}_{z}";
                 cell.transform.localScale = new Vector3(_cellSize, _cellSize, _cellSize);
@@ -83,7 +81,8 @@ public class GridManager : MonoBehaviour
                 cell.SetOutlineSettings(_outlineThickness, _outlineColor, _voxelResolution, _cellSize);
 
                 _visualGrid[x, z] = cell;
-                _logicalGrid[x, z] = new CellData(x, z);
+                _logicalGrid[x, z] = new CellData(x, z, cell);
+                cell.CellData = _logicalGrid[x, z];
             }
         }
     }
@@ -162,7 +161,10 @@ public class GridManager : MonoBehaviour
                 _visualGrid[cell.X, cell.Z] = cell;
 
             if (_logicalGrid == null)
-                _logicalGrid[cell.X, cell.Z] = new CellData(cell.X, cell.Z);
+            {
+                _logicalGrid[cell.X, cell.Z] = new CellData(cell.X, cell.Z, cell);
+                cell.CellData = _logicalGrid[cell.X, cell.Z];
+            }
         }
     }
 
