@@ -7,5 +7,6 @@ using UnityEngine;
 public interface ITarget
 {
     Vector3 GetTargetPosition();
-    Action<ITarget> OnDied { get; }
+
+    event Action<ITarget> OnDied;
 }
