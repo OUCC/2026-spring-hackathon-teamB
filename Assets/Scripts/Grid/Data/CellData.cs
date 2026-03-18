@@ -20,4 +20,6 @@ public class CellData
         Z = z;
         GridCell = gridCell;
     }
+
+    public Vector3 DirectionToNextCell => NextCellToCastle != null ? (NextCellToCastle.GridCell.transform.position - GridCell.transform.position).normalized : Vector3.zero;
 }
