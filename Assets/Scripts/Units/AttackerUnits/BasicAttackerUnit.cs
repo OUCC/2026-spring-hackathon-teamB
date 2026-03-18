@@ -14,8 +14,6 @@ public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget, IMovable
 
     public event Action<ITarget> OnDied;
 
-    public float MoveSpeed => unitData.MoveSpeed;
-
     public virtual void Initialize(IMoveStrategy moveStrategy = null, IAttackStrategy attackStrategy = null)
     {
         if (unitData == null)
