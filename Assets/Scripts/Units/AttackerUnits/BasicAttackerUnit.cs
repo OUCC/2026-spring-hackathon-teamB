@@ -50,7 +50,7 @@ public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget, IMovable
             return;
         }
 #endif
-        _moveStrategy?.Move(transform, unitData.MoveSpeed);
+        _moveStrategy?.Move(this);
         TryAttack();
     }
 
