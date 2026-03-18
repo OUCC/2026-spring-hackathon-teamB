@@ -5,7 +5,7 @@
 /// </summary>
 public interface IMoveStrategy
 {
-    void Move(IMovable transform);
+    void Move(IMovable movable);
     void OnMapUpdated();
 }
 
