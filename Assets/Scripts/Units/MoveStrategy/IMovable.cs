@@ -7,6 +7,4 @@ public interface IMovable
 
     GameObject gameObject { get; }
 #pragma warning restore IDE1006 // 命名スタイル
-
-    float MoveSpeed { get; }
 }
