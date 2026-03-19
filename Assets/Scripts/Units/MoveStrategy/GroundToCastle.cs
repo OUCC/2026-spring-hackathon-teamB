@@ -1,24 +1,79 @@
 ﻿
 using System;
+
 using UnityEngine;
 
 public class GroundToCastle : IMoveStrategy
 {
-    public void Move(Transform transform, float moveSpeed)
+    private static readonly int GROUND_LAYER = LayerMask.GetMask("Ground");
+
+    private float _moveSpeed;
+    private float _moveRequiredTime;
+
+    public GroundToCastle(float moveSpeed, float moveRequiredTime)
     {
-        Vector3 direction = GetFlowDirection(transform);
-        transform.position += direction.normalized * moveSpeed;
+        _moveSpeed = moveSpeed;
+        _moveRequiredTime = moveRequiredTime;
     }
 
-    /// <summary>
-    /// マップ情報から、次に進むべき方向を求める。
-    /// </summary>
-    /// <param name="transform"></param>
-    /// <returns></returns>
-    private Vector3 GetFlowDirection(Transform transform)
+    private GridCell _lastCell;
+    private bool _isPassedCurrentCell = false;
+    private GridCell _currentCell;
+
+    public void Move(IMovable movable)
     {
-        Debug.Log("not implemented yet");
-        return new Vector3(1f, 1f, 0f);
+        var currentCell = GetBelowGridCell(movable.transform);
+        if (currentCell == null)
+            return;
+        if (!ReferenceEquals(_currentCell, currentCell))
+        {
+            _lastCell = _currentCell;
+            _currentCell = currentCell;
+            _isPassedCurrentCell = false;
+        }
+
+        if (!_isPassedCurrentCell)
+        {
+            var diffBetween = _currentCell.transform.position - movable.transform.position;
+            diffBetween.y = 0f;
+            if (diffBetween.sqrMagnitude < _moveSpeed * _moveSpeed)
+            {
+                _isPassedCurrentCell = true;
+                var leftDistance = _moveSpeed - diffBetween.magnitude;
+                movable.transform.position = _currentCell.transform.position + currentCell.CellData.DirectionToNextCell * leftDistance;
+                return;
+            }
+            else
+            {
+                movable.transform.position += _lastCell.CellData.DirectionToNextCell * _moveSpeed;
+            }
+        }
+        else
+        {
+            movable.transform.position += _currentCell.CellData.DirectionToNextCell * _moveSpeed;
+        }
+    }
+
+    private GridCell GetBelowGridCell(Transform transform)
+    {
+        Ray ray = new(transform.position, Vector3.down);
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, GROUND_LAYER))
+        {
+            if (hit.collider.TryGetComponent(out GridCell gridCell))
+            {
+                return gridCell;
+            }
+            else
+            {
+                Debug.LogError("Ground layer should have GridCell component.");
+                return null;
+            }
+        }
+        else
+        {
+            Debug.LogError($"Could not find ground(which can be found by layer:{GROUND_LAYER}) below the unit.");
+            return null;
+        }
     }
 
     public void OnMapUpdated()

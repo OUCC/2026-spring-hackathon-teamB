@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 地面を歩く近接攻撃ユニット(=足軽)
 /// </summary>
-public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget
+public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget, IMovable
 {
     [SerializeField] protected AttackerUnitData unitData;
     protected float currentHealth;
@@ -12,8 +12,7 @@ public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget
     private IMoveStrategy _moveStrategy;
     private IAttackStrategy _attackStrategy;
 
-    private Action<ITarget> _onDied;
-    public Action<ITarget> OnDied { get => _onDied; }
+    public event Action<ITarget> OnDied;
 
     public virtual void Initialize(IMoveStrategy moveStrategy = null, IAttackStrategy attackStrategy = null)
     {
@@ -48,7 +47,7 @@ public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget
             return;
         }
 #endif
-        _moveStrategy?.Move(transform, unitData.MoveSpeed);
+        _moveStrategy?.Move(this);
         TryAttack();
     }
 
@@ -93,7 +92,7 @@ public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget
 
     public void Die()
     {
-        _onDied?.Invoke(this);
+        OnDied?.Invoke(this);
         GameManager.Instance.OnTickEvent -= Move;
     }
 }
