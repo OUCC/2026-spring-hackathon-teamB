@@ -7,6 +7,15 @@ public class GroundToCastle : IMoveStrategy
 {
     private static readonly int GROUND_LAYER = LayerMask.GetMask("Ground");
 
+    private float _moveSpeed;
+    private float _moveRequiredTime;
+
+    public GroundToCastle(float moveSpeed, float moveRequiredTime)
+    {
+        _moveSpeed = moveSpeed;
+        _moveRequiredTime = moveRequiredTime;
+    }
+
     private GridCell _lastCell;
     private bool _isPassedCurrentCell = false;
     private GridCell _currentCell;
@@ -27,21 +36,21 @@ public class GroundToCastle : IMoveStrategy
         {
             var diffBetween = _currentCell.transform.position - movable.transform.position;
             diffBetween.y = 0f;
-            if (diffBetween.sqrMagnitude < movable.MoveSpeed * movable.MoveSpeed)
+            if (diffBetween.sqrMagnitude < _moveSpeed * _moveSpeed)
             {
                 _isPassedCurrentCell = true;
-                var leftDistance = movable.MoveSpeed - diffBetween.magnitude;
+                var leftDistance = _moveSpeed - diffBetween.magnitude;
                 movable.transform.position = _currentCell.transform.position + currentCell.CellData.DirectionToNextCell * leftDistance;
                 return;
             }
             else
             {
-                movable.transform.position += _lastCell.CellData.DirectionToNextCell * movable.MoveSpeed;
+                movable.transform.position += _lastCell.CellData.DirectionToNextCell * _moveSpeed;
             }
         }
         else
         {
-            movable.transform.position += _currentCell.CellData.DirectionToNextCell * movable.MoveSpeed;
+            movable.transform.position += _currentCell.CellData.DirectionToNextCell * _moveSpeed;
         }
     }
 

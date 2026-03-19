@@ -12,10 +12,7 @@ public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget, IMovable
     private IMoveStrategy _moveStrategy;
     private IAttackStrategy _attackStrategy;
 
-    private Action<ITarget> _onDied;
-    public Action<ITarget> OnDied { get => _onDied; }
-
-    public float MoveSpeed => unitData.MoveSpeed;
+    public event Action<ITarget> OnDied;
 
     public virtual void Initialize(IMoveStrategy moveStrategy = null, IAttackStrategy attackStrategy = null)
     {
@@ -95,7 +92,7 @@ public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget, IMovable
 
     public void Die()
     {
-        _onDied?.Invoke(this);
+        OnDied?.Invoke(this);
         GameManager.Instance.OnTickEvent -= Move;
     }
 }
