@@ -11,8 +11,7 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
 
     private IAttackStrategy _attackStrategy;
 
-    private Action<ITarget> _onDied;
-    public Action<ITarget> OnDied { get => _onDied; }
+    public event Action<ITarget> OnDied;
 
     public virtual void Initialize(IAttackStrategy attackStrategy = null)
     {
@@ -23,11 +22,13 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
         }
 
         currentHealth = unitData.MaxHealth;
-
+        Debug.Log("a");
 
         if (attackStrategy != null)
             _attackStrategy = attackStrategy;
+        Debug.Log("b");
         GameManager.Instance.OnTickEvent += Heal;
+        Debug.Log("c");
     }
 
 
@@ -79,6 +80,6 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
 
     public void Die()
     {
-        _onDied?.Invoke(this);
+        OnDied?.Invoke(this);
     }
 }
