@@ -9,11 +9,18 @@ using UnityEngine;
 public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
 {
     [SerializeField] protected DefencerUnitData unitData;
+    [Header("Shoot Settings")]
+    [SerializeField] private Arrow arrowPrefab;
+    [SerializeField] private Transform firePoint;
+    [SerializeField] private float projectileSpeed = 1.0f;
     protected float currentHealth;
 
     private IAttackStrategy _attackStrategy;
 
     public event Action<ITarget> OnDied;
+    public Arrow ArrowPrefab => arrowPrefab;
+    public Transform FirePoint => firePoint != null ? firePoint : transform;
+    public float ProjectileSpeed => projectileSpeed;
 
     public virtual void Initialize(DefencerUnitData data,IAttackStrategy attackStrategy = null)
     {
@@ -25,13 +32,10 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
         }
 
         currentHealth = unitData.MaxHealth;
-        Debug.Log("a");
 
         if (attackStrategy != null)
             _attackStrategy = attackStrategy;
-        Debug.Log("b");
         GameManager.Instance.OnTickEvent += OnTick;
-        Debug.Log("c");
     }
     private void OnTick()
     {
@@ -112,5 +116,19 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
         {
             GameManager.Instance.OnTickEvent -= OnTick;
         }
+    }
+    public Arrow Shoot(Vector3 target, int damageAmount, int attackCount = 1)
+    {
+        if (arrowPrefab == null)
+        {
+            Debug.LogWarning("Arrow prefab is not assigned.");
+            return null;
+        }
+
+        Vector3 spawnPos = firePoint != null ? firePoint.position : transform.position;
+
+        Arrow arrow = Instantiate(arrowPrefab, spawnPos, Quaternion.identity);
+        arrow.Initialize(this, target, projectileSpeed, damageAmount, attackCount);
+        return arrow;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class DefencerSpawnTest : MonoBehaviour
 {
     [SerializeField] private DefencerUnitSpawner spawner;
-    [SerializeField] private string unitName = "Soldier";
+    [SerializeField] private string unitName = "yattyo";
 
     private void Update()
     {

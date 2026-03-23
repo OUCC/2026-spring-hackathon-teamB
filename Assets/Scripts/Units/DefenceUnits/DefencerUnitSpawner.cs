@@ -4,12 +4,6 @@ using UnityEngine;
 public class DefencerUnitSpawner : MonoBehaviour
 {
     [SerializeField]
-    /// <summary>
-    /// 作成可能な防御ユニットのデータのリスト
-    /// </summary>
-    /// <remarks>
-    /// 実行時に変更してはならない。
-    /// </remarks>
     private List<DefencerUnitData> _defencerUnitData;
 
     public IReadOnlyList<DefencerUnitData> DefencerUnitData => _defencerUnitData;
@@ -65,7 +59,7 @@ public class DefencerUnitSpawner : MonoBehaviour
 
         var unitInstance = Instantiate(defencerUnitData.Prefab, position, Quaternion.identity);
 
-        IAttackStrategy attackStrategy = new AttackAround(
+        IAttackStrategy attackStrategy = new AttackArrow(
             defencerUnitData.AttackCoolTime,
             defencerUnitData.AttackRange,
             defencerUnitData.AttackDamage
