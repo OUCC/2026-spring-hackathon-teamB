@@ -9,7 +9,7 @@ public class TestScript : MonoBehaviour
     {
         var gameManager = GameManager.Instance;
         var gridManager = gameManager.GridManager;
-        var spawnPoint = gridManager.GetGridCell(0, 0);
+        var spawnPoint = gridManager.GetGridCell(2, 0);
         var spawner = gameManager.AttackerUnitSpawner;
         var unitData = spawner.AttackerUnitData.First();
         if (unitData == null)
