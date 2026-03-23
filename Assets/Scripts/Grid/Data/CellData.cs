@@ -1,3 +1,5 @@
+using System;
+
 using UnityEngine;
 
 public class CellData
@@ -6,13 +8,27 @@ public class CellData
     public Vector2Int Coordinates { get { return new(X, Z); } }
     public bool IsOccupied => PlacedObject != null;
     public GameObject PlacedObject { get; set; }
-    public PlaceableItemSO ItemType { get; set; }
+
+    public PlaceableItemSO _itemType;
+    public PlaceableItemSO ItemType {
+        get => _itemType;
+        set
+        {
+            if (_itemType != value)
+            {
+                _itemType = value;
+                OnCellDataChanged?.Invoke();
+            }
+        }
+    }
 
     public GridCell GridCell { get; set; }
 
     public int X { get; private set; }
     public int Z { get; private set; }
     public CellData NextCellToCastle { get; set; }
+
+    public event Action OnCellDataChanged;
 
     public CellData(int x, int z, GridCell gridCell)
     {
