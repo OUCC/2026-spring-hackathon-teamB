@@ -14,13 +14,9 @@ public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget, IMovable
 
     public event Action<ITarget> OnDied;
 
-    public virtual void Initialize(IMoveStrategy moveStrategy = null, IAttackStrategy attackStrategy = null)
+    public virtual void Initialize(AttackerUnitData data, IMoveStrategy moveStrategy = null, IAttackStrategy attackStrategy = null)
     {
-        if (unitData == null)
-        {
-            Debug.LogError("AttackerUnitData is not assigned.");
-            return;
-        }
+        unitData = data;
 
         currentHealth = unitData.MaxHealth;
 

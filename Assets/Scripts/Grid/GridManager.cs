@@ -5,6 +5,8 @@ using UnityEngine;
 [ExecuteAlways]
 public class GridManager : MonoBehaviour
 {
+    private int _ground_layer;
+
     [Header("Grid Settings")]
     [SerializeField] private int _width = 10;
     [SerializeField] private int _height = 10;
@@ -29,7 +31,7 @@ public class GridManager : MonoBehaviour
     private int _prevHeight = -1;
     private float _prevCellSize = -1f;
 
-    private void Start()
+    private void Awake()
     {
         GenerateGrid();
         OnObjectPlaced += (x, z, item) => CalcDirectionToCell(x, z);
@@ -62,6 +64,8 @@ public class GridManager : MonoBehaviour
 
     public void GenerateGrid()
     {
+        _ground_layer = LayerMask.NameToLayer("Ground");
+
         if (_cellPrefab == null)
         {
             Debug.LogError("GridManager: Cell Prefab is not assigned.");
@@ -79,6 +83,7 @@ public class GridManager : MonoBehaviour
             {
                 Vector3 position = new Vector3(x * _cellSize, 0, z * _cellSize);
                 GridCell cell = Instantiate(_cellPrefab, position, Quaternion.identity, transform);
+                cell.gameObject.layer = _ground_layer;
                 cell.name = $"Cell_{x}_{z}";
                 cell.transform.localScale = new Vector3(_cellSize, _cellSize, _cellSize);
                 cell.Initialize(x, z);
@@ -287,7 +292,7 @@ public class GridManager : MonoBehaviour
     {
         get
         {
-            return GetCellData(_width / 2, _height / 2);
+            return GetCellData(0, _height / 2);
         }
     }
     public bool CanEnter(int x,int z)

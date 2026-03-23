@@ -22,36 +22,7 @@ public class GroundToCastle : IMoveStrategy
 
     public void Move(IMovable movable)
     {
-        var currentCell = GetBelowGridCell(movable.transform);
-        if (currentCell == null)
-            return;
-        if (!ReferenceEquals(_currentCell, currentCell))
-        {
-            _lastCell = _currentCell;
-            _currentCell = currentCell;
-            _isPassedCurrentCell = false;
-        }
-
-        if (!_isPassedCurrentCell)
-        {
-            var diffBetween = _currentCell.transform.position - movable.transform.position;
-            diffBetween.y = 0f;
-            if (diffBetween.sqrMagnitude < _moveSpeed * _moveSpeed)
-            {
-                _isPassedCurrentCell = true;
-                var leftDistance = _moveSpeed - diffBetween.magnitude;
-                movable.transform.position = _currentCell.transform.position + currentCell.CellData.DirectionToNextCell * leftDistance;
-                return;
-            }
-            else
-            {
-                movable.transform.position += _lastCell.CellData.DirectionToNextCell * _moveSpeed;
-            }
-        }
-        else
-        {
-            movable.transform.position += _currentCell.CellData.DirectionToNextCell * _moveSpeed;
-        }
+        return; // do nothing. not implemented yet.
     }
 
     private GridCell GetBelowGridCell(Transform transform)

@@ -57,6 +57,8 @@ public class GameManager : MonoBehaviour
     public GameState CurrentState => currentState;
     public WinType CurrentWinType => winType;
 
+    public AttackerUnitSpawner AttackerUnitSpawner { get; private set; }
+
     public event Action OnResourceChanged;
     public event Action OnTimeChanged;
     public event Action<GameState> OnStateChanged;
@@ -71,11 +73,15 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
+
+        AttackerUnitSpawner = FindFirstObjectByType<AttackerUnitSpawner>();
+
+        ChangeState(GameState.Ready);
     }
 
     private void Start()
     {
-        ChangeState(GameState.Ready);
+        
     }
 
     private void FixedUpdate()
