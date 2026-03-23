@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a7bf7d6cb6cd24da3672a50f12819a, type: 3}
   m_Name: GroundToCastleData
   m_EditorClassIdentifier: Assembly-CSharp::GroundToCastleData
+  _moveSpeed: 0.05
+  _moveRequiredTime: 0
