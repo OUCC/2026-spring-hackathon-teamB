@@ -7,6 +7,10 @@ public class DefencerUnitData : ScriptableObject
     /// ユニットの種類名
     /// </summary>
     public string UnitName;
+    /// <summary>
+    /// 生成するPrefab
+    /// </summary>
+    public BasicDefencerUnit Prefab;
 
     /// <summary>
     /// ユニットの最大体力

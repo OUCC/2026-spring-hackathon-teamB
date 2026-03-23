@@ -14,16 +14,10 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
     private IAttackStrategy _attackStrategy;
 
     public event Action<ITarget> OnDied;
-    private void Start()
+
+    public virtual void Initialize(DefencerUnitData data,IAttackStrategy attackStrategy = null)
     {
-        Initialize(new AttackAround(
-            unitData.AttackCoolTime,
-            unitData.AttackRange,
-            unitData.AttackDamage
-        ));
-    }
-    public virtual void Initialize(IAttackStrategy attackStrategy = null)
-    {
+        unitData = data;
         if (unitData == null)
         {
             Debug.LogError("DefencerUnitData is not assigned.");
