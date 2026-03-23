@@ -9,6 +9,11 @@ public class AttackerUnitData : ScriptableObject
     public string UnitName;
 
     /// <summary>
+    /// ユニットのプレハブ
+    /// </summary>
+    public BasicAttackerUnit Prefab;
+
+    /// <summary>
     /// ユニットの最大体力
     /// </summary>
     public int MaxHealth;
