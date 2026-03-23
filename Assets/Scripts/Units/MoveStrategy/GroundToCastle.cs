@@ -57,8 +57,6 @@ public class GroundToCastle : IMoveStrategy
         if (diff.sqrMagnitude > moveDistance * moveDistance)
         {
             diff.y = 0; // y座標は変えない
-            Debug.Log($"Move {movable.gameObject.name} towards {_destination} by {moveDistance}. diff.noralized = {diff.normalized}");
-
             movable.transform.position += diff.normalized * moveDistance;
             return;
         }
@@ -85,7 +83,6 @@ public class GroundToCastle : IMoveStrategy
         if (ReferenceEquals(_lastSteppedCell.CellData, GameManager.Instance.GridManager.Castle))
         {
             _isReachedCastle = true;
-            Debug.Log($"{movable.gameObject.name} has reached the castle!");
             return;
         }
 
