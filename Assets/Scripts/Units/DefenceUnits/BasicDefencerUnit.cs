@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -12,7 +14,14 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
     private IAttackStrategy _attackStrategy;
 
     public event Action<ITarget> OnDied;
-
+    private void Start()
+    {
+        Initialize(new AttackAround(
+            unitData.AttackCoolTime,
+            unitData.AttackRange,
+            unitData.AttackDamage
+        ));
+    }
     public virtual void Initialize(IAttackStrategy attackStrategy = null)
     {
         if (unitData == null)
@@ -27,13 +36,20 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
         if (attackStrategy != null)
             _attackStrategy = attackStrategy;
         Debug.Log("b");
-        GameManager.Instance.OnTickEvent += Heal;
+        GameManager.Instance.OnTickEvent += OnTick;
         Debug.Log("c");
     }
+    private void OnTick()
+    {
 
+        _attackStrategy?.TickCooldown();
+        var targets = GetAttackTargets();
+        _attackStrategy?.TargetFiler(targets, 1);
 
-    
+        bool attacked=TryAttack();
 
+        currentHealth = Mathf.Min(currentHealth + unitData.AutoHealAmount, unitData.MaxHealth);
+    }
     public Vector3 GetTargetPosition()
     {
         return transform.position;
@@ -47,11 +63,6 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
             Die();
         }
     }
-    public void Heal()
-    {
-        TryAttack();
-        currentHealth = Mathf.Min(currentHealth + unitData.AutoHealAmount, unitData.MaxHealth);
-    }
 
     public bool TryAttack()
     {
@@ -61,6 +72,12 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
             Debug.LogError("Attack strategy is not assigned.");
             return false;
         }
+        if (_attackStrategy.IsAttackAble)
+        {
+            _attackStrategy.Attack(this);
+            return true;
+        }
+
 #endif
         if (_attackStrategy?.IsAttackAble ?? false)
         {
@@ -68,6 +85,18 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
             return true;
         }
         return false;
+    }
+    private IEnumerable<ITarget> GetAttackTargets()
+    {
+        //敵味方の判別はついてなさそう
+        var targets = FindObjectsOfType<MonoBehaviour>()
+            .OfType<ITarget>()
+            .Where(t => t != this)
+            .ToList();
+
+        Debug.Log($"[BasicDefencerUnit] target count = {targets.Count}");
+
+        return targets;
     }
 
     private ITarget GetNearestTarget()
@@ -81,5 +110,13 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
     public void Die()
     {
         OnDied?.Invoke(this);
+        Destroy(gameObject);
+    }
+    private void OnDestroy()
+    {
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnTickEvent -= OnTick;
+        }
     }
 }

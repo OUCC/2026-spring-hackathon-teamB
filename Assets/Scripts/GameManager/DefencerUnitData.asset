@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DefencerUnitData
   UnitName: yattyo
   MaxHealth: 10
-  AttackRange: 5
+  AttackRange: 2
   AttackCoolTime: 2
   AttackDamage: 2
   SummonCost: 1

@@ -21,11 +21,11 @@ public class DefencerUnitData : ScriptableObject
     /// <summary>
     /// 攻撃を行った後、次の攻撃ができるようになるまでの時間
     /// </summary>
-    public float AttackCoolTime;
+    public int AttackCoolTime;
     /// <summary>
     /// 攻撃のダメージ量
     /// </summary>
-    public float AttackDamage;
+    public int AttackDamage;
 
     /// <summary>
     /// 召喚コスト
