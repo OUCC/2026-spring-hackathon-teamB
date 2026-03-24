@@ -2,52 +2,90 @@ using UnityEngine;
 
 public class PlayerCursorController : MonoBehaviour
 {
-    [SerializeField] private GridPlacementSystem _placementSystem;
-    [SerializeField] private Vector2Int _currentPos = Vector2Int.zero;
-    private bool _canMove = true;
+    [Header("Team Settings")]
+    [SerializeField] private GameManager.TeamType _team; // Attack か Defense かを指定
 
-    private void Start()
-    {
-        // 開始時に一度だけ呼び出して、初期位置にプレビューを表示させる
-        Invoke(nameof(InitialSync), 0.1f); // GridManagerの生成を待つために少し遅らせる
-    }
+    [Header("References")]
+    [SerializeField] private UnitListUI _unitListUI; // HUDで選択中のユニットデータを取得
+    [SerializeField] private AttackerUnitSpawner _spawner; // ユニット生成を実行するコンポーネント
 
-    private void InitialSync()
-    {
-        if (_placementSystem != null)
-            _placementSystem.UpdateCursorPosition(_currentPos.x, _currentPos.y);
-    }
+    [Header("Movement Settings")]
+    [SerializeField] private float _moveThreshold = 0.5f; // スティックをどれくらい倒したら動くか
+    private bool _canMove = true; // 押しっぱなしによる連続移動を防ぐフラグ
 
-    public void HandleMove(Vector2 input)
+    /// <summary>
+    /// InputHandler の決定ボタン (OnJump) から呼ばれる設置リクエスト
+    /// </summary>
+    public void HandleSelect()
     {
-        if (!_canMove)
+        // 1. 現在のグリッド座標を計算してログに表示
+        Vector2Int gridPos = GetGridPosition();
+        Debug.Log($"<color=cyan>[Select]</color> {_team} チームがタイル {gridPos} で決定ボタンを押しました。");
+
+        // 2. UIから現在選択中のユニット情報を取得
+        AttackerUnitData selectedData = _unitListUI.GetSelectedUnitData();
+        
+        if (selectedData == null) 
         {
-            if (input.magnitude < 0.2f) _canMove = true;
+            Debug.LogWarning($"[PlayerCursorController] {_team}: 選択されているユニットがありません。");
             return;
         }
 
-        if (input.magnitude > 0.5f)
+        // 3. スポナーに生成を依頼（お金のチェック等はスポナー側で実行される前提）
+        // 現在のカーソル位置 (transform.position) をそのまま渡します
+        _spawner.Spawn(transform.position, selectedData);
+    }
+
+    /// <summary>
+    /// スティックまたは十字キー入力による「1マスずつ」の移動処理
+    /// </summary>
+    /// <param name="direction">入力ベクトル</param>
+    public void HandleMove(Vector2 direction)
+    {
+        // 入力の強さがしきい値を超えているか
+        if (direction.magnitude > _moveThreshold)
         {
-            Vector2Int oldPos = _currentPos;
-            // 上下左右の移動判定
-            if (Mathf.Abs(input.x) > Mathf.Abs(input.y))
-                _currentPos.x += (input.x > 0) ? 1 : -1;
-            else
-                _currentPos.y += (input.y > 0) ? 1 : -1;
-
-            // 0〜9の範囲に制限（GridManagerのWidth/Heightに合わせるのが理想）
-            _currentPos.x = Mathf.Clamp(_currentPos.x, 0, 9);
-            _currentPos.y = Mathf.Clamp(_currentPos.y, 0, 9);
-
-            Debug.Log($"[Cursor] {gameObject.name} 座標更新: {oldPos} -> {_currentPos}");
-
-            if (_placementSystem != null)
+            if (_canMove)
             {
-                _placementSystem.UpdateCursorPosition(_currentPos.x, _currentPos.y);
+                // 入力が大きい方の軸（上下 or 左右）を判定して1マス分動かす
+                Vector3 moveVector = Vector3.zero;
+                
+                if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+                {
+                    // 左右移動を優先
+                    moveVector.x = direction.x > 0 ? 1 : -1;
+                }
+                else
+                {
+                    // 上下移動を優先 (Unityの平面ならZ軸)
+                    moveVector.z = direction.y > 0 ? 1 : -1;
+                }
+
+                // 座標を更新
+                transform.position += moveVector;
+
+                // 連続移動をロック
                 _canMove = false;
+
+                // 移動後の座標をコンソールに表示
+                Debug.Log($"<color=white>[Move]</color> {_team} カーソル位置: {GetGridPosition()}");
             }
+        }
+        else
+        {
+            // スティックが中央付近に戻ったら、再び移動できるようにする
+            _canMove = true;
         }
     }
 
-    public void HandleSelect() => _placementSystem.RequestPlacement();
+    /// <summary>
+    /// 現在のワールド座標を四捨五入して、整数のグリッド座標を返します
+    /// </summary>
+    private Vector2Int GetGridPosition()
+    {
+        return new Vector2Int(
+            Mathf.RoundToInt(transform.position.x),
+            Mathf.RoundToInt(transform.position.z)
+        );
+    }
 }
