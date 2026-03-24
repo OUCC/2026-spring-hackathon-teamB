@@ -269,9 +269,9 @@ public class GridManager : MonoBehaviour
             CellData nownode = queue.Dequeue();
             for(int dir = 0; dir < 4; dir++)
             {
-                int nextX = nownode.X + directions[dir,0];
-                int nextZ = nownode.X + directions[dir,1];
-                if(nextX < 0 || nextX >= _width || nextZ < 0 || nextZ >= _height)
+                int nextX = nownode.X + directions[dir, 0];
+                int nextZ = nownode.Z + directions[dir, 1];
+                if (nextX < 0 || nextX >= _width || nextZ < 0 || nextZ >= _height)
                 {
                     continue;
                 }
