@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 371acfb302957d842bc2055f121bfecc, type: 3}
   m_Name: AttackerUnitData
   m_EditorClassIdentifier: Assembly-CSharp::AttackerUnitData
-  UnitName: AttackUnit
+  UnitName: "\u8DB3\u8EFD"
   Prefab: {fileID: 3150257067797271931, guid: f31753141f993424081ba2deb3230437, type: 3}
   MaxHealth: 100
   SummonCost: 1

@@ -15,11 +15,12 @@ public class TestScript : MonoBehaviour
         if (unitData == null)
         {
             Debug.LogError("No attacker unit data found!");
-            return; 
+            return;
         }
-        var unit = spawner.Spawn(spawnPoint.transform.position + new Vector3(0, 1, 0), unitData);
 
         gameManager.StartGame();
+
+        var unit = spawner.Spawn(spawnPoint.transform.position + new Vector3(0, 1, 0), unitData);
     }
 
     // Update is called once per frame
