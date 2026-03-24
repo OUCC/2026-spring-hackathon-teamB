@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/UI/HUD/UnitCard/CardStyle.uss?fileID=7433441132597879392&amp;guid=e432c72e3524aeb4392fd2d3c4160247&amp;type=3#CardStyle"/>
     <ui:VisualElement name="UnitCard" style="width: 100px; height: 150px; align-self: flex-end; margin-top: 10px; margin-right: 10px; margin-bottom: 10px; margin-left: 10px; flex-shrink: 0; overflow: visible; -unity-background-scale-mode: scale-and-crop; bottom: auto; right: auto; top: auto;">
         <ui:VisualElement name="UnitImage" style="flex-grow: 1; background-image: none; position: absolute; width: 100px; height: 150px; aspect-ratio: auto; top: 0; left: 0;">
-            <ui:ProgressBar value="0" title="" name="IntervalProgressBar" high-value="1" style="position: absolute; bottom: 8px; left: 7px; width: 96px;"/>
+            <ui:ProgressBar value="0" title="" name="IntervalProgressBar" high-value="100" style="position: absolute; bottom: 8px; left: 7px; width: 96px;"/>
         </ui:VisualElement>
         <ui:Label text="UnitName" name="UnitNameLabel" style="position: absolute; bottom: auto; right: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 2px; top: 0; left: 0;"/>
         <ui:Label text="SummonCost" name="SummonCostLabel" style="position: absolute; bottom: 22px; right: -21px; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 2px;"/>
