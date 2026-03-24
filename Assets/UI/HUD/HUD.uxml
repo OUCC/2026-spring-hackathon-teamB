@@ -7,6 +7,10 @@
         </ui:VisualElement>
         <ui:VisualElement name="AttackSideContainer" style="flex-grow: 1; position: absolute; align-self: flex-end; top: 30px; right: 30px;">
             <ui:VisualElement name="AttackUnitList" style="flex-grow: 1; flex-direction: row-reverse; margin-top: 6px; margin-right: 6px; margin-bottom: 6px; margin-left: 6px; background-color: rgba(0, 0, 0, 0.4); padding-top: 50px; padding-right: 50px; padding-bottom: 50px; padding-left: 50px;"/>
+            <ui:VisualElement name="AttackMoneyContainer" style="width: 200px; height: 100px; align-self: center; top: 30px; background-color: rgba(0, 0, 0, 0.38); flex-direction: row-reverse;">
+                <ui:Label text="0" name="AttackMoneyLabel" selectable="true" focusable="true" style="align-self: center; font-size: 30px; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-align: upper-center; align-content: flex-start; right: 5px;"/>
+                <ui:Label text="💰️" name="TextLabel" style="align-items: flex-start; align-self: center; font-size: 25px; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-align: upper-center; position: absolute; left: 5px;"/>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
