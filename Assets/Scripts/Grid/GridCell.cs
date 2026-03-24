@@ -11,7 +11,25 @@ public class GridCell : MonoBehaviour
     [SerializeField] private Color _hoverColor = Color.cyan;
     [SerializeField] private Color _occupiedHoverColor = Color.red;
 
-    public CellData CellData { get; set; }
+    private CellData _cellData;
+    public CellData CellData
+    {
+        get
+        {
+            if ( _cellData == null)
+            {
+                _cellData = GameManager.Instance.GridManager.GetCellData(X, Z);
+            }
+            
+            if (_cellData == null)
+            {
+                Debug.LogError($"CellData for GridCell at ({X}, {Z}) not found");
+            }
+
+            return _cellData;
+        }
+        set { _cellData = value; }
+    }
 
     private void Awake()
     {
@@ -24,10 +42,10 @@ public class GridCell : MonoBehaviour
         X = x;
         Z = z;
         IsOccupied = false;
-        
+
         // Ensure MaterialPropertyBlock is ready
         if (_propBlock == null) _propBlock = new MaterialPropertyBlock();
-        
+
         SetColor(_defaultColor);
     }
 
@@ -70,7 +88,7 @@ public class GridCell : MonoBehaviour
             // Our custom shader uses _BaseColor
             _propBlock.SetColor("_BaseColor", color);
             // In case we fall back to a standard material
-            _propBlock.SetColor("_Color", color); 
+            _propBlock.SetColor("_Color", color);
 
             _renderer.SetPropertyBlock(_propBlock);
         }
