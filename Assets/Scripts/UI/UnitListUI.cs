@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using System.Linq;
+using R3;
 
 public class UnitListUI : MonoBehaviour
 {
@@ -10,7 +10,7 @@ public class UnitListUI : MonoBehaviour
 
     [Header("UI Resources")]
     [SerializeField] private VisualTreeAsset unitCardTemplate; // カードの見た目 (UXML)
-    
+
     [Header("References")]
     [SerializeField] private AttackerUnitSpawner unitSpawner; // ユニット生成器（データ取得用）
 
@@ -19,7 +19,8 @@ public class UnitListUI : MonoBehaviour
     private List<AttackerUnitData> unitDataList = new List<AttackerUnitData>();
     private int currentIndex = 0;
 
-    private void OnEnable()
+
+    private void Start()
     {
         // UIのルートを取得
         var root = GetComponent<UIDocument>().rootVisualElement;
@@ -30,10 +31,10 @@ public class UnitListUI : MonoBehaviour
 
         // スパナーからユニットデータのリストを同期
         FetchUnitData();
-        
+
         // カードを生成して並べる
         GenerateCards();
-        
+
         // 初期選択状態（0番目）にする
         if (cardElements.Count > 0)
         {
@@ -58,36 +59,6 @@ public class UnitListUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 取得したデータに基づいてカードを生成し、UIコンテナに追加します
-    /// </summary>
-    private void GenerateCards()
-    {
-        if (unitCardTemplate == null || unitListContainer == null) return;
-
-        unitListContainer.Clear();
-        cardElements.Clear();
-
-        for (int i = 0; i < unitDataList.Count; i++)
-        {
-            var unitData = unitDataList[i];
-            var newCard = unitCardTemplate.Instantiate();
-            int index = i;
-
-            // ユニット名とコストを表示に反映
-            var nameLabel = newCard.Q<Label>("NameLabel");
-            if (nameLabel != null) nameLabel.text = unitData.UnitName;
-
-            var costLabel = newCard.Q<Label>("CostLabel");
-            if (costLabel != null) costLabel.text = unitData.SummonCost.ToString();
-
-            // マウスでのクリック選択も一応残しておく
-            newCard.RegisterCallback<ClickEvent>(evt => SelectCardByIndex(index));
-
-            unitListContainer.Add(newCard);
-            cardElements.Add(newCard);
-        }
-    }
 
     /// <summary>
     /// 次のカード（右方向）を選択します。コントローラーの R ボタン等から呼び出します。
@@ -142,5 +113,82 @@ public class UnitListUI : MonoBehaviour
             return unitDataList[currentIndex];
         }
         return null;
+    }
+
+
+
+
+    private CompositeDisposable _disposables = new();
+
+    private void OnDisable()
+    {
+        // UIが非表示になったら、すべての監視（Subscribe）を完全に止める
+        _disposables.Dispose();
+        _disposables = new(); // 次に表示（OnEnable/Start）された時のために新しい箱を用意
+    }
+    private void OnDestroy()
+    {
+        // オブジェクトが破棄される時の最終的な後片付け
+        _disposables.Dispose();
+    }
+
+
+    /// <summary>
+    /// 取得したデータに基づいてカードを生成し、UIコンテナに追加します
+    /// </summary>
+    private void GenerateCards()
+    {
+        if (unitCardTemplate == null || unitListContainer == null) return;
+
+        // 1. 既存の購読（監視）と表示要素をクリア
+        _disposables.Dispose();
+        _disposables = new();
+        unitListContainer.Clear();
+        cardElements.Clear();
+
+        // 2. ユニットデータリストをループしてカードを生成
+        for (int i = 0; i < unitDataList.Count; i++)
+        {
+            var unitData = unitDataList[i];
+            var newCard = unitCardTemplate.Instantiate();
+            int index = i;
+
+            // --- A. ラベルセット処理 ---
+            var nameLabel = newCard.Q<Label>("UnitNameLabel");
+            if (nameLabel != null) nameLabel.text = unitData.UnitName;
+
+            var costLabel = newCard.Q<Label>("SummonCostLabel");
+            if (costLabel != null) costLabel.text = unitData.SummonCost.ToString();
+
+            // --- B. R3によるクールダウンのバインド ---
+            var progressBar = newCard.Q<ProgressBar>("IntervalProgressBar");
+
+            if (unitSpawner != null && progressBar != null)
+            {
+                // スポナーから「残り時間の割合 (1.0 -> 0.0)」を監視
+                unitSpawner.GetCoolDownRate(unitData)
+                    .Subscribe(rate =>
+                    {
+                        // 視覚的にわかりやすくするため、溜まっていく形式に変換
+                        // 計算式: (1.0 - 残り割合) * 100
+                        progressBar.value = (1.0f - rate) * 100f;
+
+                        // クールダウン中 (rate > 0) はカードを半透明にし、完了時は不透明にする演出
+                        newCard.style.opacity = (rate > 0f) ? 0.5f : 1.0f;
+
+                        // クールダウン中はクリックなどの操作を視覚的に無効化（任意）
+                        newCard.SetEnabled(rate <= 0f);
+                    })
+                    .AddTo(_disposables); // 管理リストに追加してメモリリーク防止
+            }
+
+            // --- C. イベントとリストへの追加 ---
+            // マウスでのクリック選択イベントを登録
+            newCard.RegisterCallback<ClickEvent>(evt => SelectCardByIndex(index));
+
+            // UIコンテナに追加し、参照リストに保存
+            unitListContainer.Add(newCard);
+            cardElements.Add(newCard);
+        }
     }
 }
