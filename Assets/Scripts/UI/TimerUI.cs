@@ -5,7 +5,7 @@ public class TimerUI : MonoBehaviour
 {
     private Label timeLabel;
 
-    private void OnEnable()
+    private void Start()
     {
         // 1. UIの取得
         var uiDocument = GetComponent<UIDocument>();
