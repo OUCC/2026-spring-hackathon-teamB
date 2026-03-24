@@ -4,87 +4,75 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour
 {
     [Header("このプレイヤーのチーム")]
-    [SerializeField] private GameManager.TeamType _team;
+    [SerializeField] private GameManager.TeamType _team; //
 
     [Header("連携するコンポーネント")]
-    [SerializeField] private PlayerCursorController _cursorController;
-    [SerializeField] private UnitListUI myUnitListUI;
+    [SerializeField] private PlayerCursorController _cursorController; //
+    [SerializeField] private UnitListUI myUnitListUI; //
 
-    [Header("References")]
-    [SerializeField] private UnitListUI _unitListUI; // HUDから選択中のデータを取るため
-    [SerializeField] private AttackerUnitSpawner _spawner; // 実際に生成する工場
+    /// <summary>
+    /// 移動入力 (Action: Move)
+    /// </summary>
     public void OnMove(InputValue value)
     {
-        Vector2 input = value.Get<Vector2>();
+        Vector2 input = value.Get<Vector2>(); //
 
-        if (_cursorController != null && input.sqrMagnitude > 0.01f)
+        // カーソルコントローラーに入力を伝える。1マス移動の判定はあちらで行う。
+        if (_cursorController != null)
         {
-            _cursorController.HandleMove(input);
+            _cursorController.HandleMove(input); //
         }
     }
+
+    /// <summary>
+    /// 次のユニットを選択 (Action: Next)
+    /// </summary>
     public void OnNext(InputValue value)
     {
         if (value.isPressed && myUnitListUI != null)
         {
-            myUnitListUI.SelectNext();
+            myUnitListUI.SelectNext(); //
         }
     }
+
+    /// <summary>
+    /// 前のユニットを選択 (Action: Previous)
+    /// </summary>
     public void OnPrevious(InputValue value)
     {
         if (value.isPressed && myUnitListUI != null)
         {
-            myUnitListUI.SelectPrevious();
+            myUnitListUI.SelectPrevious(); //
         }
     }
+
+    /// <summary>
+    /// 決定ボタン (Action: Jump)
+    /// </summary>
     public void OnJump(InputValue value)
     {
         if (value.isPressed)
         {
-            Debug.Log($"[InputHandler] {_team} の決定アクション(Jump)受信");
+            Debug.Log($"[InputHandler] {_team} の決定ボタン受信"); //
             if (_cursorController != null)
             {
-                _cursorController.HandleSelect();
+                // カーソル側に「今選んでいる場所で決定」と伝える
+                _cursorController.HandleSelect(); //
             }
         }
     }
 
+    /// <summary>
+    /// 攻撃アクション (Action: Attack)
+    /// 現状はログ出力のみ。必要に応じて機能を追加。
+    /// </summary>
     public void OnAttack(InputValue value)
     {
         if (value.isPressed)
         {
-            Debug.Log($"[InputHandler] {_team} の攻撃アクション(Attack)受信");
-            // 必要に応じてここに召喚処理などを追加
-        }
-    }
-    
-    public void HandleSelect()
-    {
-        // 1. UIから現在選んでいるユニットの設計図を取得
-        AttackerUnitData selectedData = _unitListUI.GetSelectedUnitData();
-        if (selectedData == null) return;
-
-        // 2. お金が足りるかチェックし、足りるなら消費する
-        // SpendMoney は成否を bool で返してくれるので便利です
-        bool canAfford = GameManager.Instance.SpendMoney(_team, selectedData.SummonCost);
-
-        if (canAfford)
-        {
-            // 3. お金が払えたので、スポナーに召喚を依頼する
-            // 第1引数は現在のカーソルの座標、第2引数はユニットのデータ
-            _spawner.Spawn(transform.position, selectedData); 
-
-            Debug.Log($"[Placement] {_team} が {selectedData.UnitName} を召喚しました！残り金: {GameManager.Instance.AttackMoney}");
-        }
-        else
-        {
-            // お金が足りない時の演出（SEを鳴らすなど）をここに入れる
-            Debug.LogWarning($"[Placement] {_team} のお金が足りません！必要: {selectedData.SummonCost}");
+            Debug.Log($"[InputHandler] {_team} の攻撃アクション(Attack)受信"); //
         }
     }
 
-    public void HandleMove(Vector2 direction)
-    {
-        // ここには既存のカーソル移動ロジックが入っている想定
-        // transform.position += (Vector3)direction; など
-    }
+    // --- 古い HandleSelect や不要なフィールド (_unitListUI, _spawner) は削除しました ---
 }
