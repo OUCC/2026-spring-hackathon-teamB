@@ -37,20 +37,39 @@ public class Arrow : MonoBehaviour, IProjectile
 
     public void Move()
     {
-        if(transform.position != _target)
+        Vector3 diff = _target - transform.position;
+        float distance = diff.magnitude;
+
+        if (distance <= _speed)
         {
-            var direction = (_target - transform.position).normalized;
-            transform.position += direction * _speed;
+            transform.position = _target;
+            Hit();
+            return;
         }
-        else
-        {
-            Die();
-        }
+
+        Vector3 direction = diff.normalized;
+        transform.position += direction * _speed;
     }
 
     public void Die()
     {
         GameManager.Instance.OnTickEvent -= Move;
         Destroy(gameObject);
+    }
+    private void Hit()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, 0.3f);
+
+        foreach (var hit in hits)
+        {
+            IDamageable damageable = hit.GetComponent<IDamageable>();
+            if (damageable == null) continue;
+
+            damageable.TakeDamage(_damageAmount);
+            ReduceAttackCount();
+            break;
+        }
+
+        Die();
     }
 }

@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
-
 using UnityEngine;
 
-public class AttackAround : IAttackStrategy
+public class AttackArrow : IAttackStrategy
 {
     private int _cooldownTime;
     private float _attackRange;
@@ -11,7 +10,7 @@ public class AttackAround : IAttackStrategy
     private int _remainingCooldown;
     private List<ITarget> _currentTargets = new List<ITarget>();
 
-    public AttackAround(int cooldownTime, float attackRange, int attackDamage)
+    public AttackArrow(int cooldownTime, float attackRange, int attackDamage)
     {
         _cooldownTime = cooldownTime;
         _attackRange = attackRange;
@@ -21,30 +20,43 @@ public class AttackAround : IAttackStrategy
 
     public int CooldownTime => _cooldownTime;
     public int RemainingCooldown => _remainingCooldown;
-
     public bool IsCooling => _remainingCooldown > 0;
-
     public bool IsAttackAble => !IsCooling;
 
     public void TickCooldown()
     {
         if (_remainingCooldown > 0)
         {
-            _remainingCooldown-=1;
+            _remainingCooldown -= 1;
         }
     }
 
     public void Attack(MonoBehaviour source)
     {
-        if(source == null)
+        if (source == null)
         {
             Debug.LogWarning("Attack source is null.");
             return;
         }
-        if(!IsAttackAble)
+
+        if (!IsAttackAble)
         {
             return;
         }
+
+        if (source is not IShootable)
+        {
+            Debug.LogWarning("Attack source is not IShootable.");
+            return;
+        }
+
+        BasicDefencerUnit shooter = source as BasicDefencerUnit;
+        if (shooter == null)
+        {
+            Debug.LogWarning("AttackArrow currently supports BasicDefencerUnit only.");
+            return;
+        }
+
         Vector3 sourcePos = source.transform.position;
 
         foreach (var target in _currentTargets)
@@ -54,13 +66,12 @@ public class AttackAround : IAttackStrategy
             float distance = Vector3.Distance(sourcePos, target.GetTargetPosition());
             if (distance > _attackRange) continue;
 
-            if (target is IDamageable damageable)
-            {
-                damageable.TakeDamage(_attackDamage);
-                Debug.Log($"[AttackAround] Attack success! source={source.name}, target={target}, damage={_attackDamage}, distance={distance}");
-                _remainingCooldown = _cooldownTime;
-                return;
-            }
+            shooter.Shoot(target.GetTargetPosition(), _attackDamage, 1);
+
+            Debug.Log($"[AttackArrow] Shoot success! source={source.name}, target={target}, damage={_attackDamage}, distance={distance}");
+
+            _remainingCooldown = _cooldownTime;
+            return;
         }
     }
 
