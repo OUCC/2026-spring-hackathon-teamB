@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 371acfb302957d842bc2055f121bfecc, type: 3}
+  m_Name: ashigaru
+  m_EditorClassIdentifier: Assembly-CSharp::AttackerUnitData
+  UnitName: "\u8DB3\u8EFD"
+  Prefab: {fileID: 5307881903214268865, guid: 8f4e49377ccf03348b80afb6d4066d71, type: 3}
+  Scale: 0.5
+  MaxHealth: 100
+  SummonCost: 2
+  SummonCoolTime: 56
+  SummonLimit: 100
+  MoveStrategy: {fileID: 11400000, guid: 3309e353e83225b4c8b90e18cfcdac22, type: 2}
+  AttackStrategy: {fileID: 11400000, guid: e8226cba1b87c774698e74dc7793a210, type: 2}
