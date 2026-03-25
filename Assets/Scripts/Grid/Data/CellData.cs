@@ -42,6 +42,8 @@ public class CellData
         set { _gridCell = value; }
     }
 
+    public bool CanEnter => GridCell != null && !IsOccupied;
+
     public int X { get; private set; }
     public int Z { get; private set; }
     public CellData NextCellToCastle { get; set; }

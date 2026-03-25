@@ -1,4 +1,5 @@
 ﻿using System;
+
 using UnityEngine;
 
 public class GroundToCastle : IMoveStrategy
@@ -288,19 +289,7 @@ public class GroundToCastle : IMoveStrategy
     {
         if (cell == null) return false;
 
-        // 城は入れる
-        if (ReferenceEquals(cell, GameManager.Instance.GridManager.Castle))
-        {
-            return true;
-        }
-
-        // 障害物などが置かれているなら進めない想定
-        if (cell.IsOccupied)
-        {
-            return false;
-        }
-
-        return true;
+        return cell.CanEnter;
     }
 
     private GridCell GetBelowGridCell(Transform transform)
