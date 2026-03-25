@@ -356,33 +356,27 @@ public class GridManager : MonoBehaviour
     {
         if (_directionIndicators == null)
         {
-            Debug.LogError("[Direction] _directionIndicators is null.");
             return;
         }
 
         if (_logicalGrid == null)
         {
-            Debug.LogError("[Direction] _logicalGrid is null.");
             return;
         }
 
         if (_visualGrid == null)
         {
-            Debug.LogError("[Direction] _visualGrid is null.");
             return;
         }
 
         if (x < 0 || x >= _directionIndicators.GetLength(0) || z < 0 || z >= _directionIndicators.GetLength(1))
         {
-            Debug.LogError($"[Direction] index out of range: ({x}, {z})");
             return;
         }
 
         GameObject currentIndicator = _directionIndicators[x, z];
         if (currentIndicator != null)
         {
-            Debug.Log($"[Direction] Remove old indicator at ({x}, {z}) : {currentIndicator.name}");
-
             if (Application.isPlaying)
                 Destroy(currentIndicator);
             else
@@ -394,34 +388,23 @@ public class GridManager : MonoBehaviour
         CellData cellData = _logicalGrid[x, z];
         if (cellData == null)
         {
-            Debug.LogWarning($"[Direction] cellData is null at ({x}, {z})");
             return;
         }
 
-        Debug.Log(
-            $"[Direction] cellData at ({x}, {z}) " +
-            $"HasDirectionTile={cellData.HasDirectionTile}, " +
-            $"Direction={cellData.Direction}, " +
-            $"Uses={cellData.DirectionTileRemainingUses}"
-        );
-
         if (!cellData.HasDirectionTile)
         {
-            Debug.Log($"[Direction] No direction tile at ({x}, {z})");
             return;
         }
 
         GameObject arrowPrefab = GetArrowPrefab(cellData.Direction);
         if (arrowPrefab == null)
         {
-            Debug.LogWarning($"[Direction] Arrow prefab is null for dir={cellData.Direction} at ({x}, {z})");
             return;
         }
 
         GridCell cell = _visualGrid[x, z];
         if (cell == null)
         {
-            Debug.LogWarning($"[Direction] GridCell is null at ({x}, {z})");
             return;
         }
 
@@ -436,13 +419,6 @@ public class GridManager : MonoBehaviour
 
         indicator.name = $"Direction_{x}_{z}";
         _directionIndicators[x, z] = indicator;
-
-        Debug.Log(
-            $"[Direction] Created {indicator.name} at ({x}, {z}), " +
-            $"dir={cellData.Direction}, " +
-            $"parent={(indicator.transform.parent != null ? indicator.transform.parent.name : "null")}, " +
-            $"worldPos={indicator.transform.position}"
-        );
     }
 
     private GameObject GetArrowPrefab(Vector2Int direction)
