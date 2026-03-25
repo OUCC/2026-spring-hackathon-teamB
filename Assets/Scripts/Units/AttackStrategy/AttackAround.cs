@@ -30,21 +30,24 @@ public class AttackAround : IAttackStrategy
     {
         if (_remainingCooldown > 0)
         {
-            _remainingCooldown-=1;
+            _remainingCooldown -= 1;
         }
     }
 
     public void Attack(MonoBehaviour source)
     {
-        if(source == null)
+        if (source == null)
         {
             Debug.LogWarning("Attack source is null.");
             return;
         }
-        if(!IsAttackAble)
+        if (!IsAttackAble)
         {
             return;
         }
+
+        source.GetComponentInChildren<IAttackableAnimation>()?.AttackAnimation(_cooldownTime);
+
         Vector3 sourcePos = source.transform.position;
 
         foreach (var target in _currentTargets)
