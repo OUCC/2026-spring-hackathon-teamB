@@ -68,6 +68,7 @@ public class PlayerCursorController : MonoBehaviour
         {
             // アタッカーを生成
             _attackerSpawner.Spawn(transform.position, data); 
+            _attackerSpawner.Spawn(transform.position + new Vector3(0, 0.1f, 0), data);
         }
     }
 
