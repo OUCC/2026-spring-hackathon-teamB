@@ -38,7 +38,6 @@ public class GroundToCastle : IMoveStrategy
             _isInitialized = true;
             _lastSteppedCell = GetBelowGridCell(movable.transform);
 
-
             var nextCell = _lastSteppedCell.CellData.NextCellToCastle;
             if (nextCell == null)
             {

@@ -1,0 +1,20 @@
+.unit-card-selected {
+    scale: 1.3 1.3 1.3;
+    transition-duration: 0.2s;
+    border-left-color: rgb(255, 206, 146);
+    border-right-color: rgb(255, 206, 146);
+    border-top-color: rgb(255, 206, 146);
+    border-bottom-color: rgb(255, 206, 146);
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+}
+
+.my-progress-bar .unity-progress-bar__progress {
+    background-color: rgb(255, 255, 255);
+}
+
+.unit-card-unplaceable {
+    background-color: rgba(0, 0, 0, 0.66);
+}

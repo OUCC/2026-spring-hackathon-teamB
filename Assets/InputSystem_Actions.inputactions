@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "InputSystem_Actions",
     "maps": [
         {
@@ -54,7 +55,7 @@
                     "name": "Jump",
                     "type": "Button",
                     "id": "f1ba0d36-48eb-4cd5-b651-1c94a6531f70",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -63,7 +64,7 @@
                     "name": "Previous",
                     "type": "Button",
                     "id": "2776c80d-3c14-4091-8c56-d04ced07a2b0",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -72,7 +73,7 @@
                     "name": "Next",
                     "type": "Button",
                     "id": "b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -343,6 +344,28 @@
                 },
                 {
                     "name": "",
+                    "id": "21ae503a-3e09-4832-ab73-09308c8fcbc5",
+                    "path": "<HID::8BitDo 8BitDo Ultimate wireless Controller for PC>/button7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0a613044-bdcb-4cc5-b47f-c393404851c2",
+                    "path": "<HID::8BitDo 8BitDo Ultimate wireless Controller for PC>/button7",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Next",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "f2e9ba44-c423-42a7-ad56-f20975884794",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
@@ -409,6 +432,28 @@
                 },
                 {
                     "name": "",
+                    "id": "576b8a65-b29b-4053-9237-26e1a231c9e1",
+                    "path": "<HID::8BitDo 8BitDo Ultimate wireless Controller for PC>/button2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ba8c6c5c-d0aa-4393-83e5-693f50cc7b8e",
+                    "path": "<HID::8BitDo 8BitDo Ultimate wireless Controller for PC>/button2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1534dc16-a6aa-499d-9c3a-22b47347b52a",
                     "path": "<Keyboard>/1",
                     "interactions": "",
@@ -425,6 +470,28 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
+                    "action": "Previous",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3061878f-e341-4020-92d2-9fb79c56d02c",
+                    "path": "<HID::8BitDo 8BitDo Ultimate wireless Controller for PC>/button8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Previous",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23a5b087-51d8-40be-b62d-c510843272d5",
+                    "path": "<HID::8BitDo 8BitDo Ultimate wireless Controller for PC>/button8",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Touch",
                     "action": "Previous",
                     "isComposite": false,
                     "isPartOfComposite": false
