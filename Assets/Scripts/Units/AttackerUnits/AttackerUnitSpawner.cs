@@ -8,10 +8,10 @@ public class AttackerUnitSpawner : MonoBehaviour
 {
     [SerializeField]
     /// <summary>
-    /// ì¬‰Â”\‚ÈUŒ‚ƒ†ƒjƒbƒg‚Ìƒf[ƒ^‚ÌƒŠƒXƒg
+    /// ä½œæˆå¯èƒ½ãªæ”»æ’ƒãƒ¦ãƒ‹ãƒƒãƒˆã®ãƒ‡ãƒ¼ã‚¿ã®ãƒªã‚¹ãƒˆ
     /// </summary>
     /// <remarks>
-    /// Às‚É•ÏX‚µ‚Ä‚Í‚È‚ç‚È‚¢B
+    /// å®Ÿè¡Œæ™‚ã«å¤‰æ›´ã—ã¦ã¯ãªã‚‰ãªã„ã€‚
     /// </remarks>
     private List<AttackerUnitData> _attackerUnitData;
 
@@ -20,20 +20,20 @@ public class AttackerUnitSpawner : MonoBehaviour
     private Dictionary<string, AttackerUnitData> _attackerUnitDataDict = new();
 
     /// <summary>
-    /// Šeƒ†ƒjƒbƒgí•Ê‚ÌcƒN[ƒ‹ƒ_ƒEƒ“itick”j
+    /// å„ãƒ¦ãƒ‹ãƒƒãƒˆç¨®åˆ¥ã®æ®‹ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³ï¼ˆtickæ•°ï¼‰
     /// </summary>
     private Dictionary<string, int> _coolDownRemaining = new();
 
     public IReadOnlyDictionary<string, int> CoolDownRemaining => _coolDownRemaining;
 
     /// <summary>
-    /// Šeƒ†ƒjƒbƒgí•Ê‚ÌƒN[ƒ‹ƒ_ƒEƒ“Š„‡ (0.0 ~ 1.0)
+    /// å„ãƒ¦ãƒ‹ãƒƒãƒˆç¨®åˆ¥ã®ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³å‰²åˆ (0.0 ~ 1.0)
     /// </summary>
     private Dictionary<string, ReactiveProperty<float>> _coolDownRate = new();
 
     /// <summary>
-    /// Šeƒ†ƒjƒbƒgí•Ê‚ÌƒN[ƒ‹ƒ_ƒEƒ“Š„‡‚ğw“Ç—p‚ÉŒöŠJ
-    /// </summary>
+    /// å„ãƒ¦ãƒ‹ãƒƒãƒˆç¨®åˆ¥ã®ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³å‰²åˆã‚’è³¼èª­ç”¨ã«å…¬é–‹
+    /// </summary>>
     public ReadOnlyReactiveProperty<float> GetCoolDownRate(string unitName)
         => _coolDownRate[unitName].ToReadOnlyReactiveProperty();
 
@@ -41,7 +41,7 @@ public class AttackerUnitSpawner : MonoBehaviour
         => GetCoolDownRate(data.UnitName);
 
     /// <summary>
-    /// Šeƒ†ƒjƒbƒgí•Ê‚ÌŒ»İ‚Ì”Õ–Êã‚Ì”
+    /// å„ãƒ¦ãƒ‹ãƒƒãƒˆç¨®åˆ¥ã®ç¾åœ¨ã®ç›¤é¢ä¸Šã®æ•°
     /// </summary>
     private Dictionary<string, int> _activeUnitCount = new();
 
@@ -64,19 +64,19 @@ public class AttackerUnitSpawner : MonoBehaviour
 
     private void OnDestroy()
     {
-        // GameManager‚æ‚èæ‚É”jŠü‚³‚ê‚½ê‡‚É”õ‚¦‚Änullƒ`ƒFƒbƒN
+        // GameManagerã‚ˆã‚Šå…ˆã«ç ´æ£„ã•ã‚ŒãŸå ´åˆã«å‚™ãˆã¦nullãƒã‚§ãƒƒã‚¯
         if (GameManager.Instance != null)
         {
             GameManager.Instance.OnTickEvent -= OnTick;
         }
 
-        // ReactiveProperty‚ğ”jŠü
+        // ReactivePropertyã‚’ç ´æ£„
         foreach (var rp in _coolDownRate.Values)
             rp.Dispose();
     }
 
     /// <summary>
-    /// –ˆtickƒN[ƒ‹ƒ_ƒEƒ“‚ğƒJƒEƒ“ƒgƒ_ƒEƒ“‚·‚é
+    /// æ¯tickã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³ã‚’ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ã™ã‚‹
     /// </summary>
     private void OnTick()
     {
@@ -92,24 +92,24 @@ public class AttackerUnitSpawner : MonoBehaviour
     }
 
     /// <summary>
-    /// ¢Š«‰Â”Û‚Ì”»’èŒ‹‰Ê
+    /// å¬å–šå¯å¦ã®åˆ¤å®šçµæœ
     /// </summary>
     public enum SpawnCheckResult
     {
-        /// <summary>¢Š«‰Â”\</summary>
+        /// <summary>å¬å–šå¯èƒ½</summary>
         Ok,
-        /// <summary>ƒN[ƒ‹ƒ_ƒEƒ“’†</summary>
+        /// <summary>ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³ä¸­</summary>
         CoolDown,
-        /// <summary>¢Š«ãŒÀ‚É’B‚µ‚Ä‚¢‚é</summary>
+        /// <summary>å¬å–šä¸Šé™ã«é”ã—ã¦ã„ã‚‹</summary>
         LimitReached,
-        /// <summary>‘‹à•s‘«</summary>
+        /// <summary>è³‡é‡‘ä¸è¶³</summary>
         NotEnoughMoney,
-        /// <summary>Prefab‚ª–¢İ’è</summary>
+        /// <summary>PrefabãŒæœªè¨­å®š</summary>
         PrefabNotSet,
     }
 
     /// <summary>
-    /// ¢Š«‰Â”Û‚ğ——R•t‚«‚Å•Ô‚·
+    /// å¬å–šå¯å¦ã‚’ç†ç”±ä»˜ãã§è¿”ã™
     /// </summary>
     public SpawnCheckResult CheckSpawn(AttackerUnitData data)
     {
@@ -122,7 +122,7 @@ public class AttackerUnitSpawner : MonoBehaviour
 
 
     /// <summary>
-    /// ¢Š«‰Â”\‚©‚Ç‚¤‚©‚ğ•Ô‚·
+    /// å¬å–šå¯èƒ½ã‹ã©ã†ã‹ã‚’è¿”ã™
     /// </summary>
     public bool CanSpawn(AttackerUnitData data)
     {
@@ -151,25 +151,25 @@ public class AttackerUnitSpawner : MonoBehaviour
                 return null;
 
             case SpawnCheckResult.CoolDown:
-                Debug.LogWarning($"{attackerUnitData.UnitName} ‚ÍƒN[ƒ‹ƒ_ƒEƒ“’†‚Å‚·B" +
-                                 $"c‚è: {_coolDownRemaining[attackerUnitData.UnitName]} tick");
+                Debug.LogWarning($"{attackerUnitData.UnitName} ã¯ã‚¯ãƒ¼ãƒ«ãƒ€ã‚¦ãƒ³ä¸­ã§ã™ã€‚" +
+                                 $"æ®‹ã‚Š: {_coolDownRemaining[attackerUnitData.UnitName]} tick");
                 return null;
 
             case SpawnCheckResult.LimitReached:
-                Debug.LogWarning($"{attackerUnitData.UnitName} ‚Í¢Š«ãŒÀ({attackerUnitData.SummonLimit})‚É’B‚µ‚Ä‚¢‚Ü‚·B");
+                Debug.LogWarning($"{attackerUnitData.UnitName} ã¯å¬å–šä¸Šé™({attackerUnitData.SummonLimit})ã«é”ã—ã¦ã„ã¾ã™ã€‚");
                 return null;
 
             case SpawnCheckResult.NotEnoughMoney:
-                Debug.LogWarning($"{attackerUnitData.UnitName} ‚Ì¢Š«‚É•K—v‚È‘‹à({attackerUnitData.SummonCost})‚ª•s‘«‚µ‚Ä‚¢‚Ü‚·B");
+                Debug.LogWarning($"{attackerUnitData.UnitName}  ã®å¬å–šã«å¿…è¦ãªè³‡é‡‘({attackerUnitData.SummonCost})ãŒä¸è¶³ã—ã¦ã„ã¾ã™ã€‚");
                 return null;
         }
 
-        // „Ÿ„Ÿ ‘‹àÁ”ï „Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
-        // CheckSpawn ‚Åc‹àƒ`ƒFƒbƒNÏ‚İ‚¾‚ªASpendMoney ‚Í”r‘¼§Œä‚àŒ“‚Ë‚é
+        // â”€â”€ è³‡é‡‘æ¶ˆè²» â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        // CheckSpawn ã§æ®‹é‡‘ãƒã‚§ãƒƒã‚¯æ¸ˆã¿ã ãŒã€SpendMoney ã¯æ’ä»–åˆ¶å¾¡ã‚‚å…¼ã­ã‚‹
         if (!GameManager.Instance.SpendMoney(GameManager.TeamType.Attack, attackerUnitData.SummonCost))
         {
-            Debug.LogWarning($"{attackerUnitData.UnitName} ‚Ì‘‹àÁ”ï‚É¸”s‚µ‚Ü‚µ‚½B");
-            Debug.LogWarning($"c‹à: {GameManager.Instance.AttackMoney}, •K—v‹àŠz: {attackerUnitData.SummonCost}");
+            Debug.LogWarning($"{attackerUnitData.UnitName}  ã®è³‡é‡‘æ¶ˆè²»ã«å¤±æ•—ã—ã¾ã—ãŸã€‚");
+            Debug.LogWarning($"æ®‹é‡‘: {GameManager.Instance.AttackMoney}, å¿…è¦é‡‘é¡: {attackerUnitData.SummonCost}");
             return null;
         }
 

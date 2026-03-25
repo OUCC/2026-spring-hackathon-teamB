@@ -27,4 +27,5 @@ public interface IAttackStrategy
     /// アニメーションとの整合性を取るために、複数に分割してもいいかも
     /// </summary>
     void Attack(MonoBehaviour source);
+    void TickCooldown();
 }

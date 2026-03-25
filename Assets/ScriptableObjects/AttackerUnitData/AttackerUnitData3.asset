@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 371acfb302957d842bc2055f121bfecc, type: 3}
+  m_Name: AttackerUnitData3
+  m_EditorClassIdentifier: Assembly-CSharp::AttackerUnitData
+  UnitName: AttackUnit3
+  Prefab: {fileID: 3150257067797271931, guid: f31753141f993424081ba2deb3230437, type: 3}
+  MaxHealth: 100
+  SummonCost: 1
+  SummonCoolTime: 1
+  SummonLimit: 100
+  MoveStrategy: {fileID: 11400000, guid: 3309e353e83225b4c8b90e18cfcdac22, type: 2}
+  AttackStrategy: {fileID: 11400000, guid: e8226cba1b87c774698e74dc7793a210, type: 2}
