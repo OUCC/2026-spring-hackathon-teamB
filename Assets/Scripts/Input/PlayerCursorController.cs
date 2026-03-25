@@ -12,10 +12,14 @@ public class PlayerCursorController : MonoBehaviour
     // マップの開始地点（通常は 0,0）
     [SerializeField] private Vector2Int _mapOrigin = new Vector2Int(0, 0);
 
+    [Header("Grid References")]
+    [SerializeField] private GridManager _gridManager;
 
     [Header("References (Common)")]
     [SerializeField] private float _moveThreshold = 0.5f;
     private bool _canMove = true;
+    
+    private GridCell _currentHoveredCell; 
 
     [Header("References (Attack Team)")]
     [SerializeField] private UnitListUI _attackerUI;
@@ -31,6 +35,7 @@ public class PlayerCursorController : MonoBehaviour
     {
         // テスト用：マウスの左クリックを検知
         if (Mouse.current == null) return;
+
         if (_team == GameManager.TeamType.Attack)
         {
             if (Mouse.current.leftButton.wasPressedThisFrame)
@@ -47,7 +52,52 @@ public class PlayerCursorController : MonoBehaviour
                 HandleMouseClickSpawn();
             }
         }
+
+        HandleMouseHover();
     }
+
+    private void HandleMouseHover()
+    {
+        if (Mouse.current == null || Camera.main == null) return;
+
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            GridCell cell = hit.collider.GetComponentInParent<GridCell>();
+            
+            if (cell != null)
+            {
+                transform.position = new Vector3(cell.X, transform.position.y, cell.Z);
+            }
+
+            UpdateHoverState(cell);
+        }
+        else
+        {
+            UpdateHoverState(null);
+        }
+    }
+
+    private void UpdateHoverState(GridCell newCell)
+    {
+        if (newCell != _currentHoveredCell)
+        {
+            if (_currentHoveredCell != null)
+            {
+                _currentHoveredCell.OnHoverExit();
+            }
+
+            _currentHoveredCell = newCell;
+            
+            if (_currentHoveredCell != null)
+            {
+                _currentHoveredCell.OnHoverEnter();
+            }
+        }
+    }
+    
     /// <summary>
     /// マウスのクリック位置を制限してスナップさせる
     /// </summary>
@@ -75,7 +125,6 @@ public class PlayerCursorController : MonoBehaviour
             HandleSelect(); // 既存のお金チェックや生成ロジックをそのまま利用
         }
     }
-
 
     public void HandleUINext()
     {
@@ -168,6 +217,8 @@ public class PlayerCursorController : MonoBehaviour
                 {
                     transform.position = targetPosition;
                     Debug.Log($"{_team} カーソル位置: {GetGridPosition()}");
+                    
+                    UpdateHoverStateFromPosition();
                 }
                 else
                 {
@@ -186,6 +237,15 @@ public class PlayerCursorController : MonoBehaviour
     /// <summary>
     /// 指定された座標がマップ範囲内にあるか判定
     /// </summary>
+    private void UpdateHoverStateFromPosition()
+    {
+        if (_gridManager == null) return;
+        
+        Vector2Int pos = GetGridPosition();
+        GridCell cell = _gridManager.GetVisualCell(pos.x, pos.y);
+        UpdateHoverState(cell);
+    }
+
     private bool IsWithinBounds(Vector3 position)
     {
         int x = Mathf.RoundToInt(position.x);
