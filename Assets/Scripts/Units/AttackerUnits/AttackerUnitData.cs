@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [CreateAssetMenu(fileName = "AttackerUnitData", menuName = "ScriptableObjects/AttackerUnitData/AttackerUnitData")]
 public class AttackerUnitData : ScriptableObject
@@ -11,7 +12,26 @@ public class AttackerUnitData : ScriptableObject
     /// <summary>
     /// ユニットのプレハブ
     /// </summary>
-    public BasicAttackerUnit Prefab;
+    public GameObject Prefab;
+
+    public float Scale = 1f;
+
+    public Image UnitImage
+    {
+        get
+        {
+            var animation = Prefab.GetComponent<IAttackableAnimation>();
+            if (animation != null)
+            {
+                return animation.UnitImage;
+            }
+            else
+            {
+                Debug.LogWarning($"Prefab {Prefab.name} does not have IAttackableAnimation component. UnitImage will be null.");
+                return null;
+            }
+        }
+    }
 
     /// <summary>
     /// ユニットの最大体力
