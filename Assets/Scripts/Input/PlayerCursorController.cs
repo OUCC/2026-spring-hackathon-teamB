@@ -5,6 +5,12 @@ public class PlayerCursorController : MonoBehaviour
 {
     [Header("Team Settings")]
     [SerializeField] private GameManager.TeamType _team;
+    
+    [Header("Map Settings")]
+    // インスペクターからマップの横幅・縦幅を設定（例: 20x15）
+    [SerializeField] private Vector2Int _mapSize = new Vector2Int(20, 15);
+    // マップの開始地点（通常は 0,0）
+    [SerializeField] private Vector2Int _mapOrigin = new Vector2Int(0, 0);
 
     [Header("References (Common)")]
     [SerializeField] private float _moveThreshold = 0.5f;
@@ -41,9 +47,9 @@ public class PlayerCursorController : MonoBehaviour
         }
     }
     /// <summary>
-    /// マウスのクリック位置をワールド座標（グリッド）に変換して設置を試みる
+    /// マウスのクリック位置を制限してスナップさせる
     /// </summary>
-    private void HandleMouseClickSpawn()
+        private void HandleMouseClickSpawn()
     {
         // 1. スクリーン座標をワールド座標に変換
         Vector2 mousePos = Mouse.current.position.ReadValue();
@@ -67,6 +73,7 @@ public class PlayerCursorController : MonoBehaviour
             HandleSelect(); // 既存のお金チェックや生成ロジックをそのまま利用
         }
     }
+
 
     public void HandleUINext()
     {
@@ -138,6 +145,9 @@ public class PlayerCursorController : MonoBehaviour
     /// <summary>
     /// スティック入力による移動処理（共通）
     /// </summary>
+/// <summary>
+    /// スティックまたは十字キー入力による移動
+    /// </summary>
     public void HandleMove(Vector2 direction)
     {
         if (direction.magnitude > _moveThreshold)
@@ -150,15 +160,37 @@ public class PlayerCursorController : MonoBehaviour
                 else
                     moveVector.z = direction.y > 0 ? 1 : -1;
 
-                transform.position += moveVector;
+                // --- 境界チェックの追加 ---
+                Vector3 targetPosition = transform.position + moveVector;
+                if (IsWithinBounds(targetPosition))
+                {
+                    transform.position = targetPosition;
+                    Debug.Log($"{_team} カーソル位置: {GetGridPosition()}");
+                }
+                else
+                {
+                    Debug.Log("<color=orange>マップ範囲外です</color>");
+                }
+
                 _canMove = false;
-                Debug.Log($"{_team} カーソル: {GetGridPosition()}");
             }
         }
         else
         {
             _canMove = true;
         }
+    }
+
+    /// <summary>
+    /// 指定された座標がマップ範囲内にあるか判定
+    /// </summary>
+    private bool IsWithinBounds(Vector3 position)
+    {
+        int x = Mathf.RoundToInt(position.x);
+        int z = Mathf.RoundToInt(position.z);
+
+        return x >= _mapOrigin.x && x < _mapOrigin.x + _mapSize.x &&
+               z >= _mapOrigin.y && z < _mapOrigin.y + _mapSize.y;
     }
 
     private Vector2Int GetGridPosition()
