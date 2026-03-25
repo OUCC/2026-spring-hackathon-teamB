@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3566788220555497831}
   - component: {fileID: 1282595870278965814}
   m_Layer: 0
-  m_Name: (dx,dz)=(1,0)
+  m_Name: (1,0)=(dx,dz)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

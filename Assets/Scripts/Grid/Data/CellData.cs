@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CellData
 {
-    [System.Obsolete("?ｿｽ?э?ｿｽ?ｿｽv?ｿｽ?ｿｽ?ｿｽp?ｿｽe?ｿｽB?ｿｽﾅゑｿｽ?ｿｽB CellData.X?ｿｽy?ｿｽ?ｿｽCellData.Z?ｿｽ?ｿｽ?ｿｽg?ｿｽp?ｿｽ?ｿｽ?ｿｽﾄゑｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽB")]
+    [System.Obsolete("非推奨プロパティです。 CellData.X及びCellData.Zを使用してください。")]
     public Vector2Int Coordinates { get { return new(X, Z); } }
     public bool IsOccupied => PlacedObject != null;
     public GameObject PlacedObject { get; set; }
@@ -46,11 +46,65 @@ public class CellData
 
     public int X { get; private set; }
     public int Z { get; private set; }
-    public CellData NextCellToCastle { get; set; }
+
+    private CellData _nextCellToCastle;
+    public CellData NextCellToCastle
+    {
+        get => _nextCellToCastle;
+        set
+        {
+            if (_nextCellToCastle != value)
+            {
+                _nextCellToCastle = value;
+                OnCellDataChanged?.Invoke();
+            }
+        }
+    }
+
     public event Action OnCellDataChanged;
-    public bool HasDirectionTile { get; set; }
-    public Vector2Int Direction { get; set; }
-    public int DirectionTileRemainingUses { get; set; }
+
+    private bool _hasDirectionTile;
+    public bool HasDirectionTile
+    {
+        get => _hasDirectionTile;
+        set
+        {
+            if (_hasDirectionTile != value)
+            {
+                _hasDirectionTile = value;
+                OnCellDataChanged?.Invoke();
+            }
+        }
+    }
+
+    private Vector2Int _direction;
+    public Vector2Int Direction
+    {
+        get => _direction;
+        set
+        {
+            if (_direction != value)
+            {
+                _direction = value;
+                OnCellDataChanged?.Invoke();
+            }
+        }
+    }
+
+    private int _directionTileRemainingUses;
+    public int DirectionTileRemainingUses
+    {
+        get => _directionTileRemainingUses;
+        set
+        {
+            if (_directionTileRemainingUses != value)
+            {
+                _directionTileRemainingUses = value;
+                OnCellDataChanged?.Invoke();
+            }
+        }
+    }
+
     public CellData(int x, int z, GridCell gridCell)
     {
         X = x;
