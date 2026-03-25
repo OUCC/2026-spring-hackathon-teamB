@@ -182,6 +182,33 @@ public class UnitListUI : MonoBehaviour
                     .AddTo(_disposables); // 管理リストに追加してメモリリーク防止
             }
 
+            // --- B-2. 資金不足による見た目の切り替え ---
+            if (GameManager.Instance != null)
+            {
+                // GameManager のリソース変更イベントを Observable に変換して監視
+                Observable.FromEvent(
+                    h => GameManager.Instance.OnResourceChanged += h,
+                    h => GameManager.Instance.OnResourceChanged -= h
+                )
+                .Prepend(Unit.Default) // 生成時にも一度実行して初期状態を反映
+                .Subscribe(_ =>
+                {
+                    // チームとお金を確認し、足りなければクラスを追加、足りれば削除
+                    bool canAfford = GameManager.Instance.CanSpendMoney(team, unitData.SummonCost);
+                    
+                    if (canAfford)
+                    {
+                        newCard.RemoveFromClassList("unit-card-unplaceable");
+                    }
+                    else
+                    {
+                        // クラスを追加。USS側でこのクラスに「暗くする」などのスタイルを設定してください
+                        newCard.AddToClassList("unit-card-unplaceable");
+                    }
+                })
+                .AddTo(_disposables); // メモリリーク防止
+            }
+
             // --- C. イベントとリストへの追加 ---
             // マウスでのクリック選択イベントを登録
             newCard.RegisterCallback<ClickEvent>(evt => SelectCardByIndex(index));

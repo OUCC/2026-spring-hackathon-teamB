@@ -15,7 +15,7 @@ MonoBehaviour:
   UnitName: AttackUnit2
   Prefab: {fileID: 3150257067797271931, guid: f31753141f993424081ba2deb3230437, type: 3}
   MaxHealth: 100
-  SummonCost: 1
+  SummonCost: 299
   SummonCoolTime: 1
   SummonLimit: 100
   MoveStrategy: {fileID: 11400000, guid: 3309e353e83225b4c8b90e18cfcdac22, type: 2}

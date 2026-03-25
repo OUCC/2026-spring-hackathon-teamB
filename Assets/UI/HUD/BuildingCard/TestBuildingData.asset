@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 371acfb302957d842bc2055f121bfecc, type: 3}
-  m_Name: AttackerUnitData
-  m_EditorClassIdentifier: Assembly-CSharp::AttackerUnitData
-  UnitName: "\u8DB3\u8EFD"
-  Prefab: {fileID: 3150257067797271931, guid: f31753141f993424081ba2deb3230437, type: 3}
-  MaxHealth: 100
-  SummonCost: 2
-  SummonCoolTime: 56
-  SummonLimit: 100
+  m_Script: {fileID: 11500000, guid: 94768ecf49bba3d4d981119d55057780, type: 3}
+  m_Name: TestBuildingData
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingData
+  UnitName: 
+  Prefab: {fileID: 0}
+  MaxHealth: 0
+  SummonCost: 0
+  SummonCoolTime: 0
+  SummonLimit: 0
   MoveStrategy: {fileID: 11400000, guid: 3309e353e83225b4c8b90e18cfcdac22, type: 2}
   AttackStrategy: {fileID: 11400000, guid: e8226cba1b87c774698e74dc7793a210, type: 2}

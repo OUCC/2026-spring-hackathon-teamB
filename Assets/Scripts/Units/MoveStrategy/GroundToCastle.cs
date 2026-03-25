@@ -36,7 +36,10 @@ public class GroundToCastle : IMoveStrategy
         if (!_isInitialized)
         {
             _isInitialized = true;
-            _lastSteppedCell = GetBelowGridCell(movable.transform);
+            int gridX = Mathf.RoundToInt(movable.transform.position.x);
+            int gridZ = Mathf.RoundToInt(movable.transform.position.z);
+            _lastSteppedCell = GameManager.Instance.GridManager.GetGridCell(gridX, gridZ);
+            
 
 
             var nextCell = _lastSteppedCell.CellData.NextCellToCastle;
