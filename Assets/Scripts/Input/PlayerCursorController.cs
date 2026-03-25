@@ -7,10 +7,11 @@ public class PlayerCursorController : MonoBehaviour
     [SerializeField] private GameManager.TeamType _team;
     
     [Header("Map Settings")]
-    // インスペクターからマップの横幅・縦幅を設定（例: 20x15）
-    [SerializeField] private Vector2Int _mapSize = new Vector2Int(20, 15);
+    // インスペクターからマップの横幅・縦幅を設定
+    [SerializeField] private Vector2Int _mapSize = new Vector2Int(15, 15);
     // マップの開始地点（通常は 0,0）
     [SerializeField] private Vector2Int _mapOrigin = new Vector2Int(0, 0);
+
 
     [Header("References (Common)")]
     [SerializeField] private float _moveThreshold = 0.5f;
@@ -24,6 +25,7 @@ public class PlayerCursorController : MonoBehaviour
     // 防御側専用のUIスクリプト（前回作成したもの）
     [SerializeField] private DefencerUnitListUI _defencerUI;
     [SerializeField] private DefencerUnitSpawner _defencerSpawner;
+
 
     private void Update()
     {
