@@ -1,9 +1,0 @@
-<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/HUD/BuildingCard/BuildingCardStyle.uss?fileID=7433441132597879392&amp;guid=5865f9b99f683cc49842e679f8ce116c&amp;type=3#BuildingCardStyle"/>
-    <ui:VisualElement name="BuildingCard" style="width: 100px; height: 150px; align-self: flex-end; margin-top: 10px; margin-right: 10px; margin-bottom: 10px; margin-left: 10px; flex-shrink: 0; overflow: visible; -unity-background-scale-mode: scale-and-crop; bottom: auto; right: auto; top: auto;">
-        <ui:VisualElement name="BuildingImage" style="flex-grow: 1; background-image: none; position: absolute; width: 100px; height: 150px; aspect-ratio: auto; top: 0; left: 0;"/>
-        <ui:Label text="UnitName" name="BuildingNameLabel" style="position: absolute; bottom: auto; right: auto; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 2px; top: 0; left: 0;"/>
-        <ui:Label text="SummonCost" name="BuildingNameLabel" style="position: absolute; bottom: 22px; right: -21px; color: rgb(255, 255, 255); -unity-font-style: bold; -unity-text-outline-width: 2px;"/>
-        <ui:ProgressBar value="0" title="" name="IntervalProgressBar" high-value="100" style="position: absolute; bottom: 8px; left: 7px; width: 96px;"/>
-    </ui:VisualElement>
-</ui:UXML>

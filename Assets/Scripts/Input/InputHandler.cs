@@ -8,7 +8,24 @@ public class InputHandler : MonoBehaviour
 
     [Header("連携するコンポーネント")]
     [SerializeField] private PlayerCursorController _cursorController; //
-    [SerializeField] private UnitListUI myUnitListUI; //
+    
+    public void OnNext(InputValue value)
+    {
+        // カーソルコントローラーに「次へ」と伝える
+        if (value.isPressed && _cursorController != null)
+        {
+            _cursorController.HandleUINext(); 
+        }
+    }
+
+    public void OnPrevious(InputValue value)
+    {
+        // カーソルコントローラーに「前へ」と伝える
+        if (value.isPressed && _cursorController != null)
+        {
+            _cursorController.HandleUIPrevious();
+        }
+    }
 
     /// <summary>
     /// 移動入力 (Action: Move)
@@ -24,27 +41,6 @@ public class InputHandler : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 次のユニットを選択 (Action: Next)
-    /// </summary>
-    public void OnNext(InputValue value)
-    {
-        if (value.isPressed && myUnitListUI != null)
-        {
-            myUnitListUI.SelectNext(); //
-        }
-    }
-
-    /// <summary>
-    /// 前のユニットを選択 (Action: Previous)
-    /// </summary>
-    public void OnPrevious(InputValue value)
-    {
-        if (value.isPressed && myUnitListUI != null)
-        {
-            myUnitListUI.SelectPrevious(); //
-        }
-    }
 
     /// <summary>
     /// 決定ボタン (Action: Jump)

@@ -3,84 +3,114 @@ using UnityEngine;
 public class PlayerCursorController : MonoBehaviour
 {
     [Header("Team Settings")]
-    [SerializeField] private GameManager.TeamType _team; // Attack か Defense かを指定
+    [SerializeField] private GameManager.TeamType _team; 
 
-    [Header("References")]
-    [SerializeField] private UnitListUI _unitListUI; // HUDで選択中のユニットデータを取得
-    [SerializeField] private AttackerUnitSpawner _spawner; // ユニット生成を実行するコンポーネント
+    [Header("References (Common)")]
+    [SerializeField] private float _moveThreshold = 0.5f;
+    private bool _canMove = true;
 
-    [Header("Movement Settings")]
-    [SerializeField] private float _moveThreshold = 0.5f; // スティックをどれくらい倒したら動くか
-    private bool _canMove = true; // 押しっぱなしによる連続移動を防ぐフラグ
+    [Header("References (Attack Team)")]
+    [SerializeField] private UnitListUI _attackerUI; 
+    [SerializeField] private AttackerUnitSpawner _attackerSpawner;
 
-    /// <summary>
-    /// InputHandler の決定ボタン (OnJump) から呼ばれる設置リクエスト
-    /// </summary>
-    public void HandleSelect()
+    [Header("References (Defense Team)")]
+    // 防御側専用のUIスクリプト（前回作成したもの）
+    [SerializeField] private DefencerUnitListUI _defencerUI; 
+    [SerializeField] private DefencerUnitSpawner _defencerSpawner;
+    
+    public void HandleUINext()
     {
-        // 1. 現在のグリッド座標を計算してログに表示
-        Vector2Int gridPos = GetGridPosition();
-        Debug.Log($"<color=cyan>[Select]</color> {_team} チームがタイル {gridPos} で決定ボタンを押しました。");
-
-        // 2. UIから現在選択中のユニット情報を取得
-        AttackerUnitData selectedData = _unitListUI.GetSelectedUnitData();
-        
-        if (selectedData == null) 
+        if (_team == GameManager.TeamType.Attack && _attackerUI != null)
         {
-            Debug.LogWarning($"[PlayerCursorController] {_team}: 選択されているユニットがありません。");
-            return;
+            _attackerUI.SelectNext(); // アタッカー側を操作
         }
+        else if (_team == GameManager.TeamType.Defense && _defencerUI != null)
+        {
+            _defencerUI.SelectNext(); // ディフェンダー側を操作
+        }
+    }
 
-        // 3. スポナーに生成を依頼（お金のチェック等はスポナー側で実行される前提）
-        // 現在のカーソル位置 (transform.position) をそのまま渡します
-        _spawner.Spawn(transform.position, selectedData);
+    public void HandleUIPrevious()
+    {
+        if (_team == GameManager.TeamType.Attack && _attackerUI != null)
+        {
+            _attackerUI.SelectPrevious();
+        }
+        else if (_team == GameManager.TeamType.Defense && _defencerUI != null)
+        {
+            _defencerUI.SelectPrevious();
+        }
     }
 
     /// <summary>
-    /// スティックまたは十字キー入力による「1マスずつ」の移動処理
+    /// 決定ボタンが押された時の処理
     /// </summary>
-    /// <param name="direction">入力ベクトル</param>
+    public void HandleSelect()
+    {
+        Vector2Int gridPos = GetGridPosition();
+
+        if (_team == GameManager.TeamType.Attack)
+        {
+            HandleAttackSpawn(gridPos);
+        }
+        else
+        {
+            HandleDefenseSpawn(gridPos);
+        }
+    }
+
+    private void HandleAttackSpawn(Vector2Int gridPos)
+    {
+        if (_attackerUI == null || _attackerSpawner == null) return;
+
+        AttackerUnitData data = _attackerUI.GetSelectedUnitData();
+        if (data != null)
+        {
+            // アタッカーを生成
+            _attackerSpawner.Spawn(transform.position, data); 
+        }
+    }
+
+    private void HandleDefenseSpawn(Vector2Int gridPos)
+    {
+        if (_defencerUI == null || _defencerSpawner == null) return;
+
+        // 防御側UIから選択中のデータを取得
+        // ※DefencerUnitListUIにGetSelectedData()を実装している前提
+        DefencerUnitData data = _defencerUI.GetSelectedUnitData(); 
+        if (data != null)
+        {
+            // 防御ユニット（タレット等）を生成
+            _defencerSpawner.Spawn(transform.position, data);
+        }
+    }
+
+    /// <summary>
+    /// スティック入力による移動処理（共通）
+    /// </summary>
     public void HandleMove(Vector2 direction)
     {
-        // 入力の強さがしきい値を超えているか
         if (direction.magnitude > _moveThreshold)
         {
             if (_canMove)
             {
-                // 入力が大きい方の軸（上下 or 左右）を判定して1マス分動かす
                 Vector3 moveVector = Vector3.zero;
-                
                 if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-                {
-                    // 左右移動を優先
                     moveVector.x = direction.x > 0 ? 1 : -1;
-                }
                 else
-                {
-                    // 上下移動を優先 (Unityの平面ならZ軸)
                     moveVector.z = direction.y > 0 ? 1 : -1;
-                }
 
-                // 座標を更新
                 transform.position += moveVector;
-
-                // 連続移動をロック
                 _canMove = false;
-
-                // 移動後の座標をコンソールに表示
-                Debug.Log($"<color=white>[Move]</color> {_team} カーソル位置: {GetGridPosition()}");
+                Debug.Log($"{_team} カーソル: {GetGridPosition()}");
             }
         }
         else
         {
-            // スティックが中央付近に戻ったら、再び移動できるようにする
             _canMove = true;
         }
     }
 
-    /// <summary>
-    /// 現在のワールド座標を四捨五入して、整数のグリッド座標を返します
-    /// </summary>
     private Vector2Int GetGridPosition()
     {
         return new Vector2Int(
