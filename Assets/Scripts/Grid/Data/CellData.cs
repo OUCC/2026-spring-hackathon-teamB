@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CellData
 {
-    [System.Obsolete("ï¿½ñ„ï¿½ï¿½vï¿½ï¿½ï¿½pï¿½eï¿½Bï¿½Å‚ï¿½ï¿½B CellData.Xï¿½yï¿½ï¿½CellData.Zï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B")]
+    [System.Obsolete("?¿½?„?¿½?¿½v?¿½?¿½?¿½p?¿½e?¿½B?¿½Å‚ï¿½?¿½B CellData.X?¿½y?¿½?¿½CellData.Z?¿½?¿½?¿½g?¿½p?¿½?¿½?¿½Ä‚ï¿½?¿½?¿½?¿½?¿½?¿½?¿½?¿½B")]
     public Vector2Int Coordinates { get { return new(X, Z); } }
     public bool IsOccupied => PlacedObject != null;
     public GameObject PlacedObject { get; set; }
@@ -50,6 +50,7 @@ public class CellData
     public event Action OnCellDataChanged;
     public bool HasDirectionTile { get; set; }
     public Vector2Int Direction { get; set; }
+    public int DirectionTileRemainingUses { get; set; }
     public CellData(int x, int z, GridCell gridCell)
     {
         X = x;

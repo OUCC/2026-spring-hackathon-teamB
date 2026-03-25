@@ -31,6 +31,7 @@ public class TestDirectionTilePlacer : MonoBehaviour
 
         cell.HasDirectionTile = true;
         cell.Direction = direction;
+        cell.DirectionTileRemainingUses = 3;
 
         Debug.Log($"Test direction tile placed at {tilePos}, dir={direction}");
     }

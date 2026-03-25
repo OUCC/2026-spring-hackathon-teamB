@@ -235,12 +235,34 @@ public class GroundToCastle : IMoveStrategy
         if (cellData == null) return false;
         if (!cellData.HasDirectionTile) return false;
 
-        _slideDirection = cellData.Direction;
+        // 使う向きを先に退避
+        Vector2Int direction = cellData.Direction;
+
+        // 残り使用回数がないなら壊れて通常マス化
+        if (cellData.DirectionTileRemainingUses <= 0)
+        {
+            cellData.HasDirectionTile = false;
+            cellData.Direction = Vector2Int.zero;
+            return false;
+        }
+
+        // 1回使用
+        cellData.DirectionTileRemainingUses--;
+
+        Debug.Log($"Direction tile used at ({cellData.X}, {cellData.Z}), remaining={cellData.DirectionTileRemainingUses}");
+
+        // 今回の使用で壊れる
+        if (cellData.DirectionTileRemainingUses <= 0)
+        {
+            cellData.HasDirectionTile = false;
+            cellData.Direction = Vector2Int.zero;
+            Debug.Log($"Direction tile broken at ({cellData.X}, {cellData.Z})");
+        }
+
+        _slideDirection = direction;
         _isSlidingByDirectionTile = true;
 
         var nextCell = GetNextCellInDirection(cellData, _slideDirection);
-
-        // 1マスも進めないなら、直進モードには入らない
         if (nextCell == null)
         {
             _isSlidingByDirectionTile = false;
