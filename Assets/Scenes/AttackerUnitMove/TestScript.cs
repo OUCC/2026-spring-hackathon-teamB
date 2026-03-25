@@ -9,17 +9,18 @@ public class TestScript : MonoBehaviour
     {
         var gameManager = GameManager.Instance;
         var gridManager = gameManager.GridManager;
-        var spawnPoint = gridManager.GetGridCell(0, 0);
+        var spawnPoint = gridManager.GetGridCell(2, 0);
         var spawner = gameManager.AttackerUnitSpawner;
         var unitData = spawner.AttackerUnitData.First();
         if (unitData == null)
         {
             Debug.LogError("No attacker unit data found!");
-            return; 
+            return;
         }
-        var unit = spawner.Spawn(spawnPoint.transform.position + new Vector3(0, 1, 0), unitData);
 
         gameManager.StartGame();
+
+        var unit = spawner.Spawn(spawnPoint.transform.position + new Vector3(0, 1, 0), unitData);
     }
 
     // Update is called once per frame

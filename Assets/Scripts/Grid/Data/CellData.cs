@@ -10,7 +10,8 @@ public class CellData
     public GameObject PlacedObject { get; set; }
 
     public PlaceableItemSO _itemType;
-    public PlaceableItemSO ItemType {
+    public PlaceableItemSO ItemType
+    {
         get => _itemType;
         set
         {
@@ -22,7 +23,24 @@ public class CellData
         }
     }
 
-    public GridCell GridCell { get; set; }
+    private GridCell _gridCell;
+
+    public GridCell GridCell
+    {
+        get
+        {
+            if (_gridCell == null)
+            {
+                _gridCell = GameManager.Instance.GridManager.GetGridCell(X, Z);
+            }
+            if (_gridCell == null)
+            {
+                Debug.LogError($"GridCell at ({X}, {Z}) could not be found.");
+            }
+            return _gridCell;
+        }
+        set { _gridCell = value; }
+    }
 
     public int X { get; private set; }
     public int Z { get; private set; }
