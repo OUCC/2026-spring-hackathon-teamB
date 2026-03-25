@@ -1,23 +1,73 @@
 using UnityEngine;
-
+using UnityEngine.InputSystem;
 public class PlayerCursorController : MonoBehaviour
+
 {
     [Header("Team Settings")]
-    [SerializeField] private GameManager.TeamType _team; 
+    [SerializeField] private GameManager.TeamType _team;
 
     [Header("References (Common)")]
     [SerializeField] private float _moveThreshold = 0.5f;
     private bool _canMove = true;
 
     [Header("References (Attack Team)")]
-    [SerializeField] private UnitListUI _attackerUI; 
+    [SerializeField] private UnitListUI _attackerUI;
     [SerializeField] private AttackerUnitSpawner _attackerSpawner;
 
     [Header("References (Defense Team)")]
     // 防御側専用のUIスクリプト（前回作成したもの）
-    [SerializeField] private DefencerUnitListUI _defencerUI; 
+    [SerializeField] private DefencerUnitListUI _defencerUI;
     [SerializeField] private DefencerUnitSpawner _defencerSpawner;
-    
+
+    private void Update()
+    {
+        // テスト用：マウスの左クリックを検知
+        if (Mouse.current == null) return;
+        if (_team == GameManager.TeamType.Attack)
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                Debug.Log("<color=cyan>[Attack Team]</color> アタック側左クリックで設置");
+                HandleMouseClickSpawn();
+            }
+        }
+        else if (_team == GameManager.TeamType.Defense)
+        {
+            if (Mouse.current.rightButton.wasPressedThisFrame)
+            {
+                Debug.Log("<color=green>[Defense Team]</color> ディフェンス側右クリックで設置");
+                HandleMouseClickSpawn();
+            }
+        }
+    }
+    /// <summary>
+    /// マウスのクリック位置をワールド座標（グリッド）に変換して設置を試みる
+    /// </summary>
+    private void HandleMouseClickSpawn()
+    {
+        // 1. スクリーン座標をワールド座標に変換
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        
+        // XZ平面（地面）との当たり判定を計算
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            // 2. クリックした位置をグリッドにスナップさせる
+            Vector3 gridPosition = new Vector3(
+                Mathf.RoundToInt(hit.point.x),
+                transform.position.y, // カーソルと同じ高さ
+                Mathf.RoundToInt(hit.point.z)
+            );
+
+            // 3. カーソルの位置をその場所に瞬間移動させる（視覚的なフィードバック）
+            transform.position = gridPosition;
+
+            // 4. 既存の設置処理を呼び出す
+            Debug.Log($"<color=yellow>[Debug Click]</color> {gridPosition} にクリック設置を試みます。");
+            HandleSelect(); // 既存のお金チェックや生成ロジックをそのまま利用
+        }
+    }
+
     public void HandleUINext()
     {
         if (_team == GameManager.TeamType.Attack && _attackerUI != null)
@@ -67,7 +117,6 @@ public class PlayerCursorController : MonoBehaviour
         if (data != null)
         {
             // アタッカーを生成
-            _attackerSpawner.Spawn(transform.position, data); 
             _attackerSpawner.Spawn(transform.position + new Vector3(0, 0.1f, 0), data);
         }
     }
@@ -78,7 +127,7 @@ public class PlayerCursorController : MonoBehaviour
 
         // 防御側UIから選択中のデータを取得
         // ※DefencerUnitListUIにGetSelectedData()を実装している前提
-        DefencerUnitData data = _defencerUI.GetSelectedUnitData(); 
+        DefencerUnitData data = _defencerUI.GetSelectedUnitData();
         if (data != null)
         {
             // 防御ユニット（タレット等）を生成
