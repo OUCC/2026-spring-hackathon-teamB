@@ -6,8 +6,11 @@ public class DefenderArcherAnimation : MonoBehaviour, IAttackAnimation
     [field: SerializeField]
     public Image UnitImage { get; }
 
-    public void AttackAnimation(int flames)
+    [SerializeField]
+    private GameObject _archer;
+
+    public void AttackAnimation(int flames, Quaternion quaternion)
     {
-        return;
+        _archer.transform.localRotation = quaternion;
     }
 }
