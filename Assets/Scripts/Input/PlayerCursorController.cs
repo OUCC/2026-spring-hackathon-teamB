@@ -242,7 +242,7 @@ public class PlayerCursorController : MonoBehaviour
         if (_gridManager == null) return;
         
         Vector2Int pos = GetGridPosition();
-        GridCell cell = _gridManager.GetVisualCell(pos.x, pos.y);
+        GridCell cell = _gridManager.GetGridCell(pos.x, pos.y);
         UpdateHoverState(cell);
     }
 
