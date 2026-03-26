@@ -123,7 +123,7 @@ public class WallAnimation : MonoBehaviour, IDefenceAnimation
         int vertical = (up ? 1 : 0) + (down ? 1 : 0);
 
         // 十字（完全一致のみ）
-        if (horizontal == 2 && vertical == 2)
+        if (horizontal >= 1 && vertical >= 1)
         {
             _crossingWall.SetActive(true);
             return;
