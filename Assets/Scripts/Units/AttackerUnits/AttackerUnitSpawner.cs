@@ -212,6 +212,8 @@ public class AttackerUnitSpawner : MonoBehaviour
            ? attackerUnitData.AttackStrategy.CreateInstance()
            : null;
 
+        attackStrategy.AddFilter(IAttackStrategy.TargetDefenders(attackerUnitInstance.transform));
+
         attackerUnitInstance.Initialize(attackerUnitData, moveStrategy, attackStrategy);
 
         return attackerUnitInstance;
