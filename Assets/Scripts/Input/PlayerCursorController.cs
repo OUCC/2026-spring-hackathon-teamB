@@ -5,7 +5,7 @@ public class PlayerCursorController : MonoBehaviour
 {
     [Header("Team Settings")]
     [SerializeField] private GameManager.TeamType _team;
-    
+
     [Header("Map Settings")]
     // インスペクターからマップの横幅・縦幅を設定
     [SerializeField] private Vector2Int _mapSize = new Vector2Int(15, 15);
@@ -18,8 +18,8 @@ public class PlayerCursorController : MonoBehaviour
     [Header("References (Common)")]
     [SerializeField] private float _moveThreshold = 0.5f;
     private bool _canMove = true;
-    
-    private GridCell _currentHoveredCell; 
+
+    private GridCell _currentHoveredCell;
 
     [Header("References (Attack Team)")]
     [SerializeField] private UnitListUI _attackerUI;
@@ -29,6 +29,7 @@ public class PlayerCursorController : MonoBehaviour
     // 防御側専用のUIスクリプト（前回作成したもの）
     [SerializeField] private DefencerUnitListUI _defencerUI;
     [SerializeField] private DefencerUnitSpawner _defencerSpawner;
+    [SerializeField] private DirectionTileSpawner _directionTileSpawner;
 
 
     private void Update()
@@ -66,7 +67,7 @@ public class PlayerCursorController : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             GridCell cell = hit.collider.GetComponentInParent<GridCell>();
-            
+
             if (cell != null)
             {
                 transform.position = new Vector3(cell.X, transform.position.y, cell.Z);
@@ -90,23 +91,23 @@ public class PlayerCursorController : MonoBehaviour
             }
 
             _currentHoveredCell = newCell;
-            
+
             if (_currentHoveredCell != null)
             {
                 _currentHoveredCell.OnHoverEnter();
             }
         }
     }
-    
+
     /// <summary>
     /// マウスのクリック位置を制限してスナップさせる
     /// </summary>
-        private void HandleMouseClickSpawn()
+    private void HandleMouseClickSpawn()
     {
         // 1. スクリーン座標をワールド座標に変換
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
-        
+
         // XZ平面（地面）との当たり判定を計算
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
@@ -181,22 +182,45 @@ public class PlayerCursorController : MonoBehaviour
 
     private void HandleDefenseSpawn(Vector2Int gridPos)
     {
-        if (_defencerUI == null || _defencerSpawner == null) return;
+        if (_defencerUI == null) return;
 
-        // 防御側UIから選択中のデータを取得
-        // ※DefencerUnitListUIにGetSelectedData()を実装している前提
-        DefencerUnitData data = _defencerUI.GetSelectedUnitData();
-        if (data != null)
+        // 1. 防御側UIから「共通の箱（DefenderUIObject）」を受け取る
+        DefenderUIObject selectedObj = _defencerUI.GetSelectedUIObject();
+
+        if (selectedObj != null)
         {
-            // 防御ユニット（タレット等）を生成
-            _defencerSpawner.Spawn(transform.position, data);
+            // 2. 箱の中身（Type）を見て、ユニットかタイルかを判定
+            if (selectedObj.type == ItemType.Unit)
+            {
+                // --- ユニットだった場合の処理（今まで通り） ---
+                if (_defencerSpawner != null)
+                {
+                    _defencerSpawner.Spawn(transform.position, selectedObj.unitData);
+                    Debug.Log($"[Defense] ユニット '{selectedObj.name}' を配置しました");
+                }
+            }
+            else if (selectedObj.type == ItemType.Tile)
+            {
+                // --- タイルだった場合の処理 ---
+                if (_directionTileSpawner != null)
+                {
+                    // 新しく作った専用のメソッドに、座標と向きを渡して実行させる
+                    _directionTileSpawner.PlaceTileFromExternal(gridPos.x, gridPos.y, selectedObj.tileDirection);
+
+                    Debug.Log($"[Defense] 方向タイル '{selectedObj.name}' を配置しました");
+                }
+                else
+                {
+                    Debug.LogError("DirectionTileSpawner が設定されていません！");
+                }
+            }
         }
     }
 
     /// <summary>
     /// スティック入力による移動処理（共通）
     /// </summary>
-/// <summary>
+    /// <summary>
     /// スティックまたは十字キー入力による移動
     /// </summary>
     public void HandleMove(Vector2 direction)
@@ -217,7 +241,7 @@ public class PlayerCursorController : MonoBehaviour
                 {
                     transform.position = targetPosition;
                     Debug.Log($"{_team} カーソル位置: {GetGridPosition()}");
-                    
+
                     UpdateHoverStateFromPosition();
                 }
                 else
@@ -240,7 +264,7 @@ public class PlayerCursorController : MonoBehaviour
     private void UpdateHoverStateFromPosition()
     {
         if (_gridManager == null) return;
-        
+
         Vector2Int pos = GetGridPosition();
         GridCell cell = _gridManager.GetGridCell(pos.x, pos.y);
         UpdateHoverState(cell);
@@ -262,4 +286,5 @@ public class PlayerCursorController : MonoBehaviour
             Mathf.RoundToInt(transform.position.z)
         );
     }
+    
 }

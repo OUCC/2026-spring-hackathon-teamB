@@ -153,4 +153,16 @@ public class DirectionTileSpawner : MonoBehaviour
                 return Vector2Int.zero;
         }
     }
+    // 外部のスクリプトから呼び出してタイルを配置するための専用メソッド
+    public void PlaceTileFromExternal(int targetX, int targetZ, DirectionType dir)
+    {
+        // 自分の変数を上書きする
+        this.x = targetX;
+        this.z = targetZ;
+        this.directionType = dir;
+        this.spawnMode = SpawnMode.Place;
+
+        // 既存の配置ロジックを実行する
+        Execute();
+    }
 }
