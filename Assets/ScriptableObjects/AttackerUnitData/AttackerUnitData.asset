@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: AttackerUnitData
   m_EditorClassIdentifier: Assembly-CSharp::AttackerUnitData
   UnitName: "\u8DB3\u8EFD"
-  Prefab: {fileID: 3150257067797271931, guid: f31753141f993424081ba2deb3230437, type: 3}
+  Prefab: {fileID: 919132149155446097, guid: 5c5b93f5659a4a24998b4dc3f289b9bf, type: 3}
+  Scale: 1
   MaxHealth: 100
   SummonCost: 2
   SummonCoolTime: 56
