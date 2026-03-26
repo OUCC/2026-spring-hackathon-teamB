@@ -18,7 +18,7 @@ public class CellData
             if (_itemType != value)
             {
                 _itemType = value;
-                OnCellDataChanged?.Invoke();
+                OnCellDataChanged?.Invoke(this);
             }
         }
     }
@@ -46,7 +46,7 @@ public class CellData
     public int Z { get; private set; }
     public CellData NextCellToCastle { get; set; }
 
-    public event Action OnCellDataChanged;
+    public event Action<CellData> OnCellDataChanged;
 
     public CellData(int x, int z, GridCell gridCell)
     {

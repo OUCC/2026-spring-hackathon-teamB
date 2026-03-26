@@ -95,7 +95,7 @@ public class GroundToCastle : IMoveStrategy
         var destinationCellPosition = destinationCell.GridCell.transform.position;
         destinationCellPosition.y = movable.transform.position.y; // y座標は変えない
         _destination = destinationCellPosition;
-        destinationCell.OnCellDataChanged += () => HandleUnreachableDestination(movable);
+        destinationCell.OnCellDataChanged += (_) => HandleUnreachableDestination(movable);
     }
 
     private void HandleUnreachableDestination(IMovable movable)
