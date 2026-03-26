@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73f3e79ac01c30145a69304980a8eb99, type: 3}
-  m_Name: DefencerUnitData
+  m_Name: DefenderArcher
   m_EditorClassIdentifier: Assembly-CSharp::DefencerUnitData
-  UnitName: "\u58C1"
-  Prefab: {fileID: 8376791783359792186, guid: e67c1b29a6ac1704f9c3afc5fba401ec, type: 3}
+  UnitName: "\u5F13\u6AD3"
+  Prefab: {fileID: 8376791783359792186, guid: 8562c5541d9abc5408ab90b3d88d8c23, type: 3}
   IsWall: 1
   MaxHealth: 100
-  AttackRange: 0
-  AttackCoolTime: 0
-  AttackDamage: 0
-  SummonCost: 25
-  SummonCoolTime: 60
+  AttackRange: 4
+  AttackCoolTime: 60
+  AttackDamage: 5
+  SummonCost: 100
+  SummonCoolTime: 240
   SummonLimit: 0
   AutoHealAmount: 0
