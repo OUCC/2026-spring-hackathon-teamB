@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 371acfb302957d842bc2055f121bfecc, type: 3}
   m_Name: AttackerUnitData
   m_EditorClassIdentifier: Assembly-CSharp::AttackerUnitData
-  UnitName: "\u5F13\u5175"
-  Prefab: {fileID: 2136770655523610103, guid: 92116ce3d2211e44bb909d0c09eead1b, type: 3}
-  Scale: 0.5
-  MaxHealth: 100
-  SummonCost: 2
-  SummonCoolTime: 56
-  SummonLimit: 100
+  UnitName: 
+  Prefab: {fileID: 0}
+  Scale: 1
+  MaxHealth: 0
+  SummonCost: 0
+  SummonCoolTime: 0
+  SummonLimit: 0
   MoveStrategy: {fileID: 11400000, guid: 3309e353e83225b4c8b90e18cfcdac22, type: 2}
-  AttackStrategy: {fileID: 11400000, guid: e8226cba1b87c774698e74dc7793a210, type: 2}
+  AttackStrategy: {fileID: 11400000, guid: d71f4f42faedfcf4f8e7e6da0bc12aac, type: 2}
