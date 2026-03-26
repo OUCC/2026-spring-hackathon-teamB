@@ -6,7 +6,7 @@ public class CellData
 {
     [System.Obsolete("�񐄏��v���p�e�B�ł��B CellData.X�y��CellData.Z���g�p���Ă��������B")]
     public Vector2Int Coordinates { get { return new(X, Z); } }
-    public bool IsOccupied => PlacedObject != null;
+    public bool IsOccupied => PlacedObject != null || HasDirectionTile;
     public GameObject PlacedObject { get; set; }
 
     public PlaceableItemSO _itemType;
