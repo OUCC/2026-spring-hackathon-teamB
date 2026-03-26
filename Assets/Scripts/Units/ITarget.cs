@@ -14,4 +14,6 @@ public interface ITarget
 #pragma warning restore IDE1006 // 命名スタイル
 
     event Action<ITarget> OnDied;
+
+    GameManager.TeamType Team { get; }
 }

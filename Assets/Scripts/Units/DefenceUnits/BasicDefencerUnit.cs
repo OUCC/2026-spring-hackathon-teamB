@@ -25,6 +25,8 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget, IShootable
 
     public bool IsWall => unitData.IsWall;
 
+    public GameManager.TeamType Team => GameManager.TeamType.Defense;
+
     public virtual void Initialize(DefencerUnitData data, IAttackStrategy attackStrategy = null)
     {
         unitData = data;
