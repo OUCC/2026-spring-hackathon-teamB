@@ -14,31 +14,30 @@ public class DefencerUnitListUI : MonoBehaviour
     [SerializeField] private DefencerUnitSpawner defencerSpawner; 
 
     [Header("Data")]
-    private List<DefencerUnitData> defencerUnits; // 修正済み
+    private List<DefencerUnitData> defencerUnits;
 
     private VisualElement _container;
-    private readonly CompositeDisposable _disposables = new();
+    private CompositeDisposable _disposables = new();
     private int currentIndex = 0;
     private List<VisualElement> cardElements = new List<VisualElement>();
 
     private void Start()
     {
         var root = GetComponent<UIDocument>().rootVisualElement;
+        
+        // アタッカー側の仕様に合わせ、コンテナ名を直接指定
         _container = root.Q<VisualElement>("DefenseUnitList");
 
-        // 1. スポナーからデータを同期する
         FetchUnitData();
-
-         // 2. そのデータに基づいてカードを作る
         GenerateCards();
     
         if (cardElements.Count > 0) SelectCardByIndex(0);
     }
+
     private void FetchUnitData()
     {
         if (defencerSpawner != null)
         {
-            // スポナーが持っている IReadOnlyList からリストを作成
             defencerUnits = new List<DefencerUnitData>(defencerSpawner.DefencerUnitData);
         }
         else
@@ -50,11 +49,20 @@ public class DefencerUnitListUI : MonoBehaviour
     private void OnDisable()
     {
         _disposables.Dispose();
+        _disposables = new();
+    }
+
+    private void OnDestroy()
+    {
+        _disposables.Dispose();
     }
 
     private void GenerateCards()
     {
-        if (_container == null) return;
+        if (_container == null || unitCardTemplate == null) return;
+        
+        _disposables.Dispose();
+        _disposables = new();
         _container.Clear();
         cardElements.Clear();
 
@@ -70,12 +78,20 @@ public class DefencerUnitListUI : MonoBehaviour
             var costLabel = newCard.Q<Label>("SummonCostLabel");
             if (costLabel != null) costLabel.text = unitData.SummonCost.ToString();
 
-            // ※ 現在のDefencerUnitSpawnerにはクールダウン機能がないため、プログレスバーは常に満タンか非表示にします
-            var progressBar = newCard.Q<ProgressBar>("IntervalProgressBar");
-            if (progressBar != null) progressBar.value = 100f; 
+            // 資金不足時のオーバーレイ（幕）要素を取得
+            var unplaceableOverlay = newCard.Q<VisualElement>("UnplacebleColor");
 
-            // --- 資金不足判定のみ行う（GameManagerを使用） ---
-            if (GameManager.Instance != null)
+            var progressBar = newCard.Q<ProgressBar>("IntervalProgressBar");
+            if (progressBar != null) 
+            {
+                // 現在のDefencerUnitSpawnerにはクールダウン機能がないため、常に満タンとして処理
+                progressBar.value = 100f; 
+                // 値が100(High Value)なので非表示にする
+                progressBar.style.display = DisplayStyle.None;
+            }
+
+            // --- 資金不足判定 ---
+            if (GameManager.Instance != null && unplaceableOverlay != null)
             {
                 Observable.FromEvent(
                     h => GameManager.Instance.OnResourceChanged += h,
@@ -85,13 +101,19 @@ public class DefencerUnitListUI : MonoBehaviour
                 .Subscribe(_ =>
                 {
                     bool canAfford = GameManager.Instance.CanSpendMoney(team, unitData.SummonCost);
-                    if (canAfford) newCard.RemoveFromClassList("unit-card-unplaceable");
-                    else newCard.AddToClassList("unit-card-unplaceable");
+                    
+                    if (canAfford) 
+                    {
+                        unplaceableOverlay.RemoveFromClassList("unit-card-unplaceable");
+                    }
+                    else 
+                    {
+                        unplaceableOverlay.AddToClassList("unit-card-unplaceable");
+                    }
                 })
                 .AddTo(_disposables);
             }
 
-            // クリックで選択
             newCard.RegisterCallback<ClickEvent>(evt => SelectCardByIndex(index));
 
             _container.Add(newCard);
@@ -111,7 +133,6 @@ public class DefencerUnitListUI : MonoBehaviour
         currentIndex = index;
         cardElements[currentIndex].AddToClassList("unit-card-selected");
     }
-
 
     public void SelectNext()
     {

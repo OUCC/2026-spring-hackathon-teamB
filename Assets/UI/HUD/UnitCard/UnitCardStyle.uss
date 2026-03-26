@@ -1,0 +1,39 @@
+.unit-card-selected {
+    scale: 1 1 1.3;
+    transition-duration: 0.2s;
+    border-left-color: rgb(255, 206, 146);
+    border-right-color: rgb(255, 206, 146);
+    border-top-color: rgb(255, 206, 146);
+    border-bottom-color: rgb(255, 206, 146);
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+}
+
+.my-interval-bar .unity-progress-bar__progress {
+    background-color: rgb(0, 180, 180);
+    margin: 0px;
+}
+.my-interval-bar .unity-progress-bar__title-container {
+    background-color: rgba(0, 0, 0, 0);
+    
+}
+.my-interval-bar .unity-progress-bar__title {
+    background-color: rgba(0, 0, 0, 0);
+    
+}
+.my-interval-bar .unity-progress-bar__background {
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 1px;
+    border-color: rgb(0, 0, 0);
+    
+}
+.my-interval-bar .unity-progress-bar__container {
+    background-color: rgba(0, 0, 0, 0);
+    
+}
+
+.unit-card-unplaceable {
+    background-color: rgba(0, 0, 0, 0.59);
+}
