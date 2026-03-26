@@ -326,6 +326,6 @@ public class GridManager : MonoBehaviour
     }
     public bool CanEnter(int x, int z)
     {
-        return true;
+        return _logicalGrid[x, z].CanEnter;
     }
 }
