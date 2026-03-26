@@ -91,7 +91,9 @@ public class GridManager : MonoBehaviour
 
                 _visualGrid[x, z] = cell;
                 _logicalGrid[x, z] = new CellData(x, z, cell);
+
                 cell.CellData = _logicalGrid[x, z];
+                _logicalGrid[x, z].OnCellDataChanged += (_) => CalcDirectionToCell(x, z);
             }
         }
 
