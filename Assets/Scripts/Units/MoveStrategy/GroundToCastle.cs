@@ -121,22 +121,13 @@ public class GroundToCastle : IMoveStrategy
 
     private GridCell GetBelowGridCell(Transform transform)
     {
-        Ray ray = new(transform.position, Vector3.down);
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, GROUND_LAYER))
-        {
-            if (hit.collider.TryGetComponent(out GridCell gridCell))
+        if (GameManager.Instance.GridManager.TryGetGridCellFromWorld(transform.position, out var cell))
             {
-                return gridCell;
-            }
-            else
-            {
-                Debug.LogError("Ground layer should have GridCell component.");
-                return null;
-            }
+            return cell;
         }
         else
         {
-            Debug.LogError($"Could not find ground(which can be found by layer:{GROUND_LAYER}) below the unit.");
+            Debug.LogError("Failed to get grid cell from world position");
             return null;
         }
     }
