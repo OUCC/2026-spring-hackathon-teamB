@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CellData
 {
-    [System.Obsolete("非推奨プロパティです。 CellData.X及びCellData.Zを使用してください。")]
+    [System.Obsolete("?ｿｽ?э?ｿｽ?ｿｽv?ｿｽ?ｿｽ?ｿｽp?ｿｽe?ｿｽB?ｿｽﾅゑｿｽ?ｿｽB CellData.X?ｿｽy?ｿｽ?ｿｽCellData.Z?ｿｽ?ｿｽ?ｿｽg?ｿｽp?ｿｽ?ｿｽ?ｿｽﾄゑｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽB")]
     public Vector2Int Coordinates { get { return new(X, Z); } }
     public bool IsOccupied => PlacedObject != null;
     public GameObject PlacedObject { get; set; }
@@ -42,12 +42,15 @@ public class CellData
         set { _gridCell = value; }
     }
 
+    public bool CanEnter => GridCell != null && !IsOccupied;
+
     public int X { get; private set; }
     public int Z { get; private set; }
     public CellData NextCellToCastle { get; set; }
-
     public event Action OnCellDataChanged;
-
+    public bool HasDirectionTile { get; set; }
+    public Vector2Int Direction { get; set; }
+    public int DirectionTileRemainingUses { get; set; }
     public CellData(int x, int z, GridCell gridCell)
     {
         X = x;

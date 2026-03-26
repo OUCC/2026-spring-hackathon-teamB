@@ -244,7 +244,7 @@ public class GridManager : MonoBehaviour
     /// <param name="z">更新されたタイルのZ。<see langword="-1"/>の時は、全て再計算が必要</param>
     private void CalcDirectionToCell(int x, int z)
     {
-        if(_logicalGrid == null) return;
+        if (_logicalGrid == null) return;
         CellData castleCell = Castle;
         /*for(int i = 0; i < _width; i++)
         {
@@ -264,10 +264,10 @@ public class GridManager : MonoBehaviour
             {0,1},
             {0,-1}
         };
-        while(queue.Count >0)
+        while (queue.Count > 0)
         {
             CellData nownode = queue.Dequeue();
-            for(int dir = 0; dir < 4; dir++)
+            for (int dir = 0; dir < 4; dir++)
             {
                 int nextX = nownode.X + directions[dir, 0];
                 int nextZ = nownode.Z + directions[dir, 1];
@@ -275,7 +275,7 @@ public class GridManager : MonoBehaviour
                 {
                     continue;
                 }
-                if(CanEnter(nextX, nextZ))
+                if (CanEnter(nextX, nextZ))
                 {
                     CellData nextNode = GetCellData(nextX, nextZ);
                     if (nextNode.NextCellToCastle == null && nextNode != castleCell)
@@ -295,8 +295,8 @@ public class GridManager : MonoBehaviour
             return GetCellData(0, _height / 2);
         }
     }
-    public bool CanEnter(int x,int z)
+    public bool CanEnter(int x, int z)
     {
-        return true;
+        return _logicalGrid[x, z].CanEnter;
     }
 }
