@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class CellData
 {
-    [System.Obsolete("”ñ„§ƒvƒƒpƒeƒB‚Å‚·B CellData.X‹y‚ÑCellData.Z‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢B")]
+    [System.Obsolete("ï¿½ñ„ï¿½ï¿½vï¿½ï¿½ï¿½pï¿½eï¿½Bï¿½Å‚ï¿½ï¿½B CellData.Xï¿½yï¿½ï¿½CellData.Zï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B")]
     public Vector2Int Coordinates { get { return new(X, Z); } }
-    public bool IsOccupied => PlacedObject != null;
+    public bool IsOccupied => PlacedObject != null || HasDirectionTile;
     public GameObject PlacedObject { get; set; }
 
     public PlaceableItemSO _itemType;
