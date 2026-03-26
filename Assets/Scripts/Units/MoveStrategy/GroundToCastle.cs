@@ -90,12 +90,21 @@ public class GroundToCastle : IMoveStrategy
         UpdateDestination(nextCell, movable);
     }
 
+    private CellData _currentDestinationCell;
+    private Action<CellData> _currentAction;
     private void UpdateDestination(CellData destinationCell, IMovable movable)
     {
+        if (_currentDestinationCell != null && _currentAction != null)
+        {
+            _currentDestinationCell.OnCellDataChanged -= _currentAction;
+        }
+        _currentDestinationCell = destinationCell;
+
         var destinationCellPosition = destinationCell.GridCell.transform.position;
         destinationCellPosition.y = movable.transform.position.y; // y座標は変えない
         _destination = destinationCellPosition;
-        destinationCell.OnCellDataChanged += (_) => HandleUnreachableDestination(movable);
+        _currentAction = (_) => HandleUnreachableDestination(movable);
+        destinationCell.OnCellDataChanged += _currentAction;
     }
 
     private void HandleUnreachableDestination(IMovable movable)
