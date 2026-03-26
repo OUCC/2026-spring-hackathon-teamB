@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: DefencerUnitData 1
   m_EditorClassIdentifier: Assembly-CSharp::DefencerUnitData
   UnitName: kaguya
-  Prefab: {fileID: 4621465224454881813, guid: 59f1e32756727bf4c81a146c21b50ee7, type: 3}
+  Prefab: {fileID: 7012668181207828412, guid: 59f1e32756727bf4c81a146c21b50ee7, type: 3}
+  IsWall: 0
   MaxHealth: 10
-  AttackRange: 2
-  AttackCoolTime: 2
-  AttackDamage: 2
   SummonCost: 1
   SummonCoolTime: 1
   SummonLimit: 1
   AutoHealAmount: 1
+  AttackStrategyData: {fileID: 11400000, guid: d71f4f42faedfcf4f8e7e6da0bc12aac, type: 2}

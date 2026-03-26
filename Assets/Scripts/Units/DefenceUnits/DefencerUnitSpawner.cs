@@ -46,19 +46,23 @@ public class DefencerUnitSpawner : MonoBehaviour
 
     public BasicDefencerUnit Spawn(Vector3 position, DefencerUnitData defencerUnitData)
     {
-        if (defencerUnitData == null)
+        if (defencerUnitData == null) 
         {
-            Debug.LogError("DefencerUnitData is null");
+            Debug.LogWarning("召喚しようとしましたが、ユニットデータが空です。");
             return null;
         }
 
-        if (defencerUnitData.Prefab == null)
+        // 63行目：ここで data.UnitName などにアクセスしても安全になる
+        if (!GameManager.Instance.CanSpendMoney(GameManager.TeamType.Defense, defencerUnitData.SummonCost))
         {
-            Debug.LogError($"Prefab is not set in DefencerUnitData: {defencerUnitData.UnitName}");
+            // ... お金足りない処理
             return null;
         }
 
-        var unitInstance = Instantiate(defencerUnitData.Prefab, position, Quaternion.identity);
+        float yOffset = 0.5f; 
+        Vector3 spawnPosition = new Vector3(position.x, position.y + yOffset, position.z);
+
+        var unitInstance = Instantiate(defencerUnitData.Prefab, spawnPosition, Quaternion.identity);
 
         IAttackStrategy attackStrategy = defencerUnitData.AttackStrategyData.CreateInstance();
         attackStrategy.AddFilter(IAttackStrategy.TargetAttackers(unitInstance.transform));

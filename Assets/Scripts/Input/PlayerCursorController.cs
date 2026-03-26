@@ -180,36 +180,33 @@ public class PlayerCursorController : MonoBehaviour
         }
     }
 
-    private void HandleDefenseSpawn(Vector2Int gridPos)
+private void HandleDefenseSpawn(Vector2Int gridPos)
+{
+    // 現在UIで選ばれている「箱」を取得
+    var selectedObj = _defencerUI.GetSelectedUIObject();
+    if (selectedObj == null) return;
+
+    // 世界座標に変換（GridManagerのセルサイズを考慮）
+    Vector3 spawnPos = new Vector3(gridPos.x * _gridManager.CellSize, 0, gridPos.y * _gridManager.CellSize);
+
+    // 【ここが重要】種類によって呼び出すスポナーを分ける！
+    if (selectedObj.type == ItemType.Unit)
     {
-        if (_defencerUI == null) return;
-
-        // 1. 防御側UIから「共通の箱（DefenderUIObject）」を受け取る
-        DefenderUIObject selectedObj = _defencerUI.GetSelectedUIObject();
-
-        if (selectedObj != null)
+        // ユニットの場合：ユニット用スポナーへ
+        if (selectedObj.unitData != null)
         {
-            // 2. 箱の中身（Type）を見て、ユニットかタイルかを判定
-            if (selectedObj.type == ItemType.Unit)
-            {
-                // --- ユニットだった場合の処理（今まで通り） ---
-                if (_defencerSpawner != null)
-                {
-                    _defencerSpawner.Spawn(transform.position, selectedObj.unitData);
-                    Debug.Log($"[Defense] ユニット '{selectedObj.name}' を配置しました");
-                }
-            }
-            else if (selectedObj.type == ItemType.Tile)
-            {
-                // タイルだった場合
-                if (_directionTileSpawner != null)
-                {
-                    // スポナーに座標、向き、そしてUIで設定したコストを渡す
-                    _directionTileSpawner.Spawn(transform.position, selectedObj.tileDirection, selectedObj.summonCost);
-                }
-            }
+            _defencerSpawner.Spawn(spawnPos, selectedObj.unitData);
         }
     }
+    else if (selectedObj.type == ItemType.Tile)
+    {
+        // タイルの場合：タイル用スポナーへ
+        if (_directionTileSpawner != null)
+        {
+            _directionTileSpawner.Spawn(spawnPos, selectedObj.tileDirection, selectedObj.summonCost);
+        }
+    }
+}
 
     /// <summary>
     /// スティック入力による移動処理（共通）
