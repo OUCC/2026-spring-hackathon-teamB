@@ -4,6 +4,8 @@ using System.Linq;
 
 using UnityEngine;
 
+using ZLinq;
+
 public interface IAttackStrategy
 {
     bool IsCooling { get { return RemainingCooldown > 0; } }
