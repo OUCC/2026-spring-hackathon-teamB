@@ -42,20 +42,6 @@ public class DefencerUnitData : ScriptableObject
     public int MaxHealth;
 
     /// <summary>
-    /// 攻撃範囲
-    /// </summary>
-    public float AttackRange;
-
-    /// <summary>
-    /// 攻撃を行った後、次の攻撃ができるようになるまでの時間
-    /// </summary>
-    public int AttackCoolTime;
-    /// <summary>
-    /// 攻撃のダメージ量
-    /// </summary>
-    public int AttackDamage;
-
-    /// <summary>
     /// 召喚コスト
     /// </summary>
     public int SummonCost;
@@ -71,4 +57,6 @@ public class DefencerUnitData : ScriptableObject
     /// 自動体力回復量
     /// </summary>
     public int AutoHealAmount;
+
+    public AttackStrategyData AttackStrategyData;
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+
 using UnityEngine;
 
 /// <summary>
@@ -11,6 +12,8 @@ public class BasicAttackerUnit : MonoBehaviour, IDamageable, ITarget, IMovable
 
     private IMoveStrategy _moveStrategy;
     private IAttackStrategy _attackStrategy;
+
+    public GameManager.TeamType Team => GameManager.TeamType.Attack;
 
     public event Action<ITarget> OnDied;
 

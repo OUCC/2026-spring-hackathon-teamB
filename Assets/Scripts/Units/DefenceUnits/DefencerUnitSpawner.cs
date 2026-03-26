@@ -60,11 +60,8 @@ public class DefencerUnitSpawner : MonoBehaviour
 
         var unitInstance = Instantiate(defencerUnitData.Prefab, position, Quaternion.identity);
 
-        IAttackStrategy attackStrategy = new AttackArrow(
-            defencerUnitData.AttackCoolTime,
-            defencerUnitData.AttackRange,
-            defencerUnitData.AttackDamage
-        );
+        IAttackStrategy attackStrategy = defencerUnitData.AttackStrategyData.CreateInstance();
+        attackStrategy.AddFilter(IAttackStrategy.TargetAttackers(unitInstance.transform));
 
         var defenderUnitInstance = unitInstance.GetComponentInChildren<BasicDefencerUnit>();
 
