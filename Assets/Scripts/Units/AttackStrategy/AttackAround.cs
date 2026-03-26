@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
 
-public class AttackAround : IAttackStrategy
+public class AttackAround : IAttackStrategy, IDisposable
 {
     private int _cooldownTime;
     private float _attackRange;
@@ -11,13 +12,28 @@ public class AttackAround : IAttackStrategy
     private int _remainingCooldown;
     private List<ITarget> _currentTargets = new List<ITarget>();
 
+    private Collider[] _lookAroundResults;
+
     public AttackAround(int cooldownTime, float attackRange, int attackDamage)
     {
         _cooldownTime = cooldownTime;
         _attackRange = attackRange;
         _attackDamage = attackDamage;
         _remainingCooldown = 0;
+
+        // 攻撃時に周囲の攻撃対象を探すための配列。
+        // フィルタによって実際に攻撃をする数は減るため、同時攻撃対象数より十分多くしておく。
+        _lookAroundResults = new Collider[10];
+
+        GameManager.Instance.OnTickEvent += TickCooldown;
     }
+
+    public void Dispose()
+    {
+        GameManager.Instance.OnTickEvent -= TickCooldown;
+    }
+
+
 
     public int CooldownTime => _cooldownTime;
     public int RemainingCooldown => _remainingCooldown;
@@ -26,7 +42,7 @@ public class AttackAround : IAttackStrategy
 
     public bool IsAttackAble => !IsCooling;
 
-    public void TickCooldown()
+    private void TickCooldown()
     {
         if (_remainingCooldown > 0)
         {
@@ -86,5 +102,18 @@ public class AttackAround : IAttackStrategy
         _currentTargets = filtered.ToList();
 
         return _currentTargets.OrderBy(_ => 0);
+    }
+
+    private List<Func<IEnumerable<ITarget>, IOrderedEnumerable<ITarget>>> _targetFilters = new();
+
+    public void AddFilter(Func<IEnumerable<ITarget>, IOrderedEnumerable<ITarget>> filter)
+    {
+        if (!_targetFilters.Contains(filter))
+            _targetFilters.Add(filter);
+    }
+
+    public void RemoveFilter(Func<IEnumerable<ITarget>, IOrderedEnumerable<ITarget>> filter)
+    {
+        _targetFilters.Remove(filter);
     }
 }

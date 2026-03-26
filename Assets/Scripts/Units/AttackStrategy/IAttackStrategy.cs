@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
 
 public interface IAttackStrategy
@@ -27,5 +28,21 @@ public interface IAttackStrategy
     /// アニメーションとの整合性を取るために、複数に分割してもいいかも
     /// </summary>
     void Attack(MonoBehaviour source);
-    void TickCooldown();
+
+    void AddFilter(Func<IEnumerable<ITarget>, IOrderedEnumerable<ITarget>> filter);
+    void RemoveFilter(Func<IEnumerable<ITarget>, IOrderedEnumerable<ITarget>> filter);
+
+
+    static Func<IEnumerable<ITarget>, IOrderedEnumerable<ITarget>> TargetAttackers(Transform source)
+    {
+        return targets => targets
+            .Where(t => t != null && t.Team == GameManager.TeamType.Attack)
+            .OrderByDistance(source.position);
+    }
+    static Func<IEnumerable<ITarget>, IOrderedEnumerable<ITarget>> TargetDefenders(Transform source)
+    {
+        return targets => targets
+            .Where(t => t != null && t.Team == GameManager.TeamType.Defense)
+            .OrderByDistance(source.position);
+    }
 }

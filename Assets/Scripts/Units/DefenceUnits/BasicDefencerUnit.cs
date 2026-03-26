@@ -44,15 +44,10 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget, IShootable
     }
     private void OnTick()
     {
-
-        _attackStrategy?.TickCooldown();
-        var targets = GetAttackTargets();
-        _attackStrategy?.TargetFiler(targets, 1);
-
-        bool attacked = TryAttack();
-
+        TryAttack();
         currentHealth = Mathf.Min(currentHealth + unitData.AutoHealAmount, unitData.MaxHealth);
     }
+
     public Vector3 GetTargetPosition()
     {
         return transform.position;
