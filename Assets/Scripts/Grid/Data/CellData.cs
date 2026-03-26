@@ -7,7 +7,22 @@ public class CellData
     [System.Obsolete("非推奨プロパティです。 CellData.X及びCellData.Zを使用してください。")]
     public Vector2Int Coordinates { get { return new(X, Z); } }
     public bool IsOccupied => PlacedObject != null;
-    public GameObject PlacedObject { get; set; }
+
+    private GameObject _placedObject;
+    public GameObject PlacedObject
+    {
+        get { return _placedObject; }
+        set
+        {
+
+            _placedObject = value;
+            PlacedDefenderUnit = _placedObject != null ? _placedObject.GetComponent<BasicDefencerUnit>() : null;
+            OnCellDataChanged?.Invoke(this);
+        }
+    }
+
+    public BasicDefencerUnit PlacedDefenderUnit { get; private set; }
+
 
     public PlaceableItemSO _itemType;
     public PlaceableItemSO ItemType

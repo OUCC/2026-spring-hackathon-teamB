@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [CreateAssetMenu(fileName = "DefencerUnitData", menuName = "ScriptableObjects/DefencerUnitData")]
 public class DefencerUnitData : ScriptableObject
@@ -10,13 +11,36 @@ public class DefencerUnitData : ScriptableObject
     /// <summary>
     /// 生成するPrefab
     /// </summary>
-    public BasicDefencerUnit Prefab;
+    public GameObject Prefab;
+
+    public Image UnitImage
+    {
+        get
+        {
+            var animation = Prefab.GetComponent<IAttackAnimation>();
+            if (animation != null)
+            {
+                return animation.UnitImage;
+            }
+            else
+            {
+                Debug.LogWarning($"Prefab {Prefab.name} does not have IAttackableAnimation component. UnitImage will be null.");
+                return null;
+            }
+        }
+    }
+    /// <summary>
+    /// 壁を含むオブジェクトであるかどうか。
+    /// 壁の接続のために必要な情報。壁であれば、隣接する同じ種類の壁と接続して見えるようにする。
+    /// trueの場合、壁の接続を試みる。
+    /// </summary>
+    public bool IsWall = false;
 
     /// <summary>
     /// ユニットの最大体力
     /// </summary>
     public int MaxHealth;
-    
+
     /// <summary>
     /// 攻撃範囲
     /// </summary>

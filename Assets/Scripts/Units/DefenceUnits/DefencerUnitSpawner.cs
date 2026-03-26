@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using UnityEngine;
 
 public class DefencerUnitSpawner : MonoBehaviour
@@ -65,8 +66,27 @@ public class DefencerUnitSpawner : MonoBehaviour
             defencerUnitData.AttackDamage
         );
 
-        unitInstance.Initialize(defencerUnitData, attackStrategy);
+        var defenderUnitInstance = unitInstance.GetComponentInChildren<BasicDefencerUnit>();
 
-        return unitInstance;
+        defenderUnitInstance.Initialize(defencerUnitData, attackStrategy);
+
+        if (!GameManager.Instance.GridManager.TryGetGridCellFromWorld(position, out var cell))
+        {
+            Debug.LogError("防御側オブジェクトをマップ外に配置しようとしています");
+        }
+
+        cell.CellData.PlacedObject = unitInstance;
+
+        var defenceAnimation = unitInstance.GetComponentInChildren<IDefenceAnimation>();
+        if (defenceAnimation != null)
+        {
+            if (cell != null)
+            {
+                defenceAnimation.SetPotion(cell.CellData);
+            }
+
+        }
+
+        return defenderUnitInstance;
     }
 }
