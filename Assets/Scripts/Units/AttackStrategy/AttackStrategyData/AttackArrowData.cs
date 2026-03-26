@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[CreateAssetMenu(fileName = "AttackArrowData", menuName = "ScriptableObjects/AttackStrategyData/AttackArrowData")]
 public class AttackArrowData : AttackStrategyData
 {
     [SerializeField]
