@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using UnityEngine;
 
@@ -16,6 +16,12 @@ public class GridManager : MonoBehaviour
     [SerializeField] private float _outlineThickness = 0.5f; // In Voxel Units
     [SerializeField] private Color _outlineColor = new Color(0f, 0f, 0f, 0.5f);
     [SerializeField] private float _voxelResolution = 16f;
+    [Header("Direction Indicator Settings")]
+    [SerializeField] private GameObject _arrowPrefab_dx_0_dz_1;
+    [SerializeField] private GameObject _arrowPrefab_dx_0_dz_minus_1;
+    [SerializeField] private GameObject _arrowPrefab_dx_minus_1_dz_0;
+    [SerializeField] private GameObject _arrowPrefab_dx_1_dz_0;
+    [SerializeField] private float _directionIndicatorYOffset = 0.51f;
 
     public int Width => _width;
     public int Height => _height;
@@ -23,6 +29,7 @@ public class GridManager : MonoBehaviour
 
     private GridCell[,] _visualGrid;
     private CellData[,] _logicalGrid;
+    private GameObject[,] _directionIndicators;
 
     public event System.Action<int, int, PlaceableItemSO> OnObjectPlaced;
     public event System.Action<int, int> OnObjectRemoved;
@@ -76,6 +83,7 @@ public class GridManager : MonoBehaviour
 
         _visualGrid = new GridCell[_width, _height];
         _logicalGrid = new CellData[_width, _height];
+        _directionIndicators = new GameObject[_width, _height];
 
         for (int x = 0; x < _width; x++)
         {
@@ -92,6 +100,7 @@ public class GridManager : MonoBehaviour
                 _visualGrid[x, z] = cell;
                 _logicalGrid[x, z] = new CellData(x, z, cell);
                 cell.CellData = _logicalGrid[x, z];
+                SubscribeCellData(_logicalGrid[x, z]);
             }
         }
 
@@ -111,6 +120,8 @@ public class GridManager : MonoBehaviour
 
             cell.SetOutlineSettings(_outlineThickness, _outlineColor, _voxelResolution, _cellSize);
         }
+
+        RefreshDirectionIndicators();
 
 #if UNITY_EDITOR
         if (!Application.isPlaying)
@@ -144,6 +155,10 @@ public class GridManager : MonoBehaviour
         {
             _logicalGrid = null;
         }
+        if (_directionIndicators != null)
+        {
+            _directionIndicators = null;
+        }
     }
 
     [System.Obsolete("Use GetGridCell instead. This method will be removed in future versions.")]
@@ -165,16 +180,20 @@ public class GridManager : MonoBehaviour
     {
         _visualGrid = new GridCell[_width, _height];
         _logicalGrid = new CellData[_width, _height];
+        _directionIndicators = new GameObject[_width, _height];
 
         foreach (var cell in GetComponentsInChildren<GridCell>())
         {
-            if (_visualGrid == null)
+            if (_visualGrid[cell.X, cell.Z] == null)
+            {
                 _visualGrid[cell.X, cell.Z] = cell;
+            }
 
-            if (_logicalGrid == null)
+            if (_logicalGrid[cell.X, cell.Z] == null)
             {
                 _logicalGrid[cell.X, cell.Z] = new CellData(cell.X, cell.Z, cell);
                 cell.CellData = _logicalGrid[cell.X, cell.Z];
+                SubscribeCellData(_logicalGrid[cell.X, cell.Z]);
             }
         }
     }
@@ -191,6 +210,7 @@ public class GridManager : MonoBehaviour
         if (visual != null) visual.IsOccupied = true;
 
         OnObjectPlaced?.Invoke(x, z, item);
+        UpdateDirectionIndicator(x, z);
     }
 
     public void RemoveObject(int x, int z)
@@ -209,11 +229,15 @@ public class GridManager : MonoBehaviour
 
         data.PlacedObject = null;
         data.ItemType = null;
+        data.HasDirectionTile = false;
+        data.Direction = Vector2Int.zero;
+        data.DirectionTileRemainingUses = 0;
 
         GridCell visual = GetGridCell(x, z);
         if (visual != null) visual.IsOccupied = false;
 
         OnObjectRemoved?.Invoke(x, z);
+        UpdateDirectionIndicator(x, z);
     }
 
     public Vector3 GetGridCenter()
@@ -255,6 +279,13 @@ public class GridManager : MonoBehaviour
             
         }
         */
+        for (int i = 0; i < _width; i++)
+        {
+            for (int j = 0; j < _height; j++)
+            {
+                _logicalGrid[i, j].NextCellToCastle = null;
+            }
+        }
         Queue<CellData> queue = new Queue<CellData>();
         queue.Enqueue(castleCell);
         int[,] directions =
@@ -286,6 +317,7 @@ public class GridManager : MonoBehaviour
                 }
             }
         }
+        RefreshDirectionIndicators();
         // TODO: _logicalGridの各CellData.NextCellToCastleに、城へ向かうための次のセルを設定する。
     }
     public CellData Castle
@@ -298,5 +330,124 @@ public class GridManager : MonoBehaviour
     public bool CanEnter(int x,int z)
     {
         return true;
+    }
+
+    private void SubscribeCellData(CellData cellData)
+    {
+        int x = cellData.X;
+        int z = cellData.Z;
+        cellData.OnCellDataChanged += () => UpdateDirectionIndicator(x, z);
+    }
+
+    private void RefreshDirectionIndicators()
+    {
+        if (_logicalGrid == null || _visualGrid == null || _directionIndicators == null) return;
+
+        for (int x = 0; x < _width; x++)
+        {
+            for (int z = 0; z < _height; z++)
+            {
+                UpdateDirectionIndicator(x, z);
+            }
+        }
+    }
+
+    private void UpdateDirectionIndicator(int x, int z)
+    {
+        if (_directionIndicators == null)
+        {
+            return;
+        }
+
+        if (_logicalGrid == null)
+        {
+            return;
+        }
+
+        if (_visualGrid == null)
+        {
+            return;
+        }
+
+        if (x < 0 || x >= _directionIndicators.GetLength(0) || z < 0 || z >= _directionIndicators.GetLength(1))
+        {
+            return;
+        }
+
+        GameObject currentIndicator = _directionIndicators[x, z];
+        if (currentIndicator != null)
+        {
+            if (Application.isPlaying)
+                Destroy(currentIndicator);
+            else
+                DestroyImmediate(currentIndicator);
+
+            _directionIndicators[x, z] = null;
+        }
+
+        CellData cellData = _logicalGrid[x, z];
+        if (cellData == null)
+        {
+            return;
+        }
+
+        if (!cellData.HasDirectionTile)
+        {
+            return;
+        }
+
+        GameObject arrowPrefab = GetArrowPrefab(cellData.Direction);
+        if (arrowPrefab == null)
+        {
+            return;
+        }
+
+        GridCell cell = _visualGrid[x, z];
+        if (cell == null)
+        {
+            return;
+        }
+
+        Vector3 spawnPosition = cell.transform.position + Vector3.up * _directionIndicatorYOffset;
+
+        GameObject indicator = Instantiate(
+            arrowPrefab,
+            spawnPosition,
+            arrowPrefab.transform.rotation,
+            transform
+        );
+
+        indicator.name = $"Direction_{x}_{z}";
+        _directionIndicators[x, z] = indicator;
+    }
+
+    private GameObject GetArrowPrefab(Vector2Int direction)
+    {
+        if (direction == Vector2Int.zero)
+        {
+            return null;
+        }
+
+        if (direction == new Vector2Int(1, 0))
+        {
+            return _arrowPrefab_dx_1_dz_0;
+        }
+
+        if (direction == new Vector2Int(-1, 0))
+        {
+            return _arrowPrefab_dx_minus_1_dz_0;
+        }
+
+        if (direction == new Vector2Int(0, 1))
+        {
+            return _arrowPrefab_dx_0_dz_1;
+        }
+
+        if (direction == new Vector2Int(0, -1))
+        {
+            return _arrowPrefab_dx_0_dz_minus_1;
+        }
+
+        return null;
     }
 }

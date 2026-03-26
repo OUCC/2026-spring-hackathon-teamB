@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4955596406581059950}
   - component: {fileID: 3715392248924619816}
   m_Layer: 0
-  m_Name: (dx,dz)=(0,1)
+  m_Name: (0,1)=(dx,dz)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CellData
 {
-    [System.Obsolete("”ñ„§ƒvƒƒpƒeƒB‚Å‚·B CellData.X‹y‚ÑCellData.Z‚ðŽg—p‚µ‚Ä‚­‚¾‚³‚¢B")]
+    [System.Obsolete("ï¿½ñ„ï¿½ï¿½vï¿½ï¿½ï¿½pï¿½eï¿½Bï¿½Å‚ï¿½ï¿½B CellData.Xï¿½yï¿½ï¿½CellData.Zï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B")]
     public Vector2Int Coordinates { get { return new(X, Z); } }
     public bool IsOccupied => PlacedObject != null;
     public GameObject PlacedObject { get; set; }
@@ -44,9 +44,64 @@ public class CellData
 
     public int X { get; private set; }
     public int Z { get; private set; }
-    public CellData NextCellToCastle { get; set; }
+
+    private CellData _nextCellToCastle;
+    public CellData NextCellToCastle
+    {
+        get => _nextCellToCastle;
+        set
+        {
+            if (_nextCellToCastle != value)
+            {
+                _nextCellToCastle = value;
+                OnCellDataChanged?.Invoke();
+            }
+        }
+    }
 
     public event Action OnCellDataChanged;
+
+    private bool _hasDirectionTile;
+    public bool HasDirectionTile
+    {
+        get => _hasDirectionTile;
+        set
+        {
+            if (_hasDirectionTile != value)
+            {
+                _hasDirectionTile = value;
+                OnCellDataChanged?.Invoke();
+            }
+        }
+    }
+
+    private Vector2Int _direction;
+    public Vector2Int Direction
+    {
+        get => _direction;
+        set
+        {
+            if (_direction != value)
+            {
+                _direction = value;
+                OnCellDataChanged?.Invoke();
+            }
+        }
+    }
+
+    private int _directionTileRemainingUses;
+    public int DirectionTileRemainingUses
+    {
+        get => _directionTileRemainingUses;
+        set
+        {
+            if (_directionTileRemainingUses != value)
+            {
+                _directionTileRemainingUses = value;
+                OnCellDataChanged?.Invoke();
+            }
+        }
+    }
 
     public CellData(int x, int z, GridCell gridCell)
     {
