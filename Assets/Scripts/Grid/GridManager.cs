@@ -23,6 +23,9 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GameObject _arrowPrefab_dx_1_dz_0;
     [SerializeField] private float _directionIndicatorYOffset = 0.51f;
 
+    [Header("Caslte Settings")]
+    [SerializeField] private GameObject _castlePrefab;
+
     public int Width => _width;
     public int Height => _height;
     public float CellSize => _cellSize;
@@ -102,6 +105,20 @@ public class GridManager : MonoBehaviour
                 cell.CellData = _logicalGrid[x, z];
                 SubscribeCellData(_logicalGrid[x, z]);
             }
+        }
+
+        if (_castlePrefab != null)
+        {
+            Vector3 castlePosition = new Vector3((_width / 2) * _cellSize, 0.5f, 0);
+            GameObject castle = Instantiate(_castlePrefab.gameObject, castlePosition, Quaternion.identity, transform);
+
+            var cellBound = Castle.GridCell.GetComponent<Renderer>().bounds;
+            var castleBoound = castle.GetComponentInChildren<Renderer>().bounds;
+
+            float offset = cellBound.max.z - castleBoound.min.z;
+            castle.transform.position += new Vector3(0, 0, offset);
+
+            castle.name = "Castle";
         }
 
         CalcDirectionToCell(-1, -1);
@@ -351,7 +368,7 @@ public class GridManager : MonoBehaviour
     {
         get
         {
-            return GetCellData(0, _height / 2);
+            return GetCellData(_width / 2, _height - 1);
         }
     }
     public bool CanEnter(int x, int z)
