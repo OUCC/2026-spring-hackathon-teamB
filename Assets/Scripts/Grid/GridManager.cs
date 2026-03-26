@@ -100,8 +100,8 @@ public class GridManager : MonoBehaviour
 
         if (_castlePrefab != null)
         {
-            Vector3 castlePosition = new Vector3((_width / 2) * _cellSize, 1, 0);
-            GameObject castle = Instantiate(_castlePrefab, castlePosition, Quaternion.identity, transform);
+            Vector3 castlePosition = new Vector3((_width / 2) * _cellSize, 0.5f, 0);
+            GameObject castle = Instantiate(_castlePrefab.gameObject, castlePosition, Quaternion.identity, transform);
 
             var cellBound = Castle.GridCell.GetComponent<Renderer>().bounds;
             var castleBoound = castle.GetComponentInChildren<Renderer>().bounds;
