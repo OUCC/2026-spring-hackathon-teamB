@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
 
 /// <summary>
 /// 地面を歩く近接防御ユニット(=足軽)
 /// </summary>
-public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
+public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget, IShootable
 {
     [SerializeField] protected DefencerUnitData unitData;
     [Header("Shoot Settings")]
@@ -22,7 +23,9 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
     public Transform FirePoint => firePoint != null ? firePoint : transform;
     public float ProjectileSpeed => projectileSpeed;
 
-    public virtual void Initialize(DefencerUnitData data,IAttackStrategy attackStrategy = null)
+    public bool IsWall => unitData.IsWall;
+
+    public virtual void Initialize(DefencerUnitData data, IAttackStrategy attackStrategy = null)
     {
         unitData = data;
         if (unitData == null)
@@ -44,7 +47,7 @@ public class BasicDefencerUnit : MonoBehaviour, IDamageable, ITarget,IShootable
         var targets = GetAttackTargets();
         _attackStrategy?.TargetFiler(targets, 1);
 
-        bool attacked=TryAttack();
+        bool attacked = TryAttack();
 
         currentHealth = Mathf.Min(currentHealth + unitData.AutoHealAmount, unitData.MaxHealth);
     }

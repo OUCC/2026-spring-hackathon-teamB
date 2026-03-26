@@ -170,10 +170,37 @@ public class GridManager : MonoBehaviour
         return _visualGrid[x, z];
     }
 
+    public bool TryGetGridCellFromWorld(Vector3 worldPos, out GridCell cell)
+    {
+        cell = null;
+
+        // GridManager基準のローカル座標に変換
+        Vector3 localPos = worldPos - transform.position;
+
+        int x = Mathf.FloorToInt(localPos.x / _cellSize);
+        int z = Mathf.FloorToInt(localPos.z / _cellSize);
+
+        // 範囲チェック
+        if (x < 0 || x >= _width || z < 0 || z >= _height)
+            return false;
+
+        cell = GetGridCell(x, z);
+        return cell != null;
+    }
+
     public CellData GetCellData(int x, int z)
     {
         if (_logicalGrid == null) RebuildGridArrays();
         return _logicalGrid[x, z];
+    }
+
+    public bool TryGetCellData(int x, int z, out CellData cellData)
+    {
+        cellData = null;
+        if (_logicalGrid == null) RebuildGridArrays();
+        if (x < 0 || x >= _width || z < 0 || z >= _height) return false;
+        cellData = _logicalGrid[x, z];
+        return true;
     }
 
     private void RebuildGridArrays()
@@ -268,7 +295,7 @@ public class GridManager : MonoBehaviour
     /// <param name="z">更新されたタイルのZ。<see langword="-1"/>の時は、全て再計算が必要</param>
     private void CalcDirectionToCell(int x, int z)
     {
-        if(_logicalGrid == null) return;
+        if (_logicalGrid == null) return;
         CellData castleCell = Castle;
         /*for(int i = 0; i < _width; i++)
         {
@@ -295,10 +322,10 @@ public class GridManager : MonoBehaviour
             {0,1},
             {0,-1}
         };
-        while(queue.Count >0)
+        while (queue.Count > 0)
         {
             CellData nownode = queue.Dequeue();
-            for(int dir = 0; dir < 4; dir++)
+            for (int dir = 0; dir < 4; dir++)
             {
                 int nextX = nownode.X + directions[dir, 0];
                 int nextZ = nownode.Z + directions[dir, 1];
@@ -306,7 +333,7 @@ public class GridManager : MonoBehaviour
                 {
                     continue;
                 }
-                if(CanEnter(nextX, nextZ))
+                if (CanEnter(nextX, nextZ))
                 {
                     CellData nextNode = GetCellData(nextX, nextZ);
                     if (nextNode.NextCellToCastle == null && nextNode != castleCell)
@@ -327,7 +354,7 @@ public class GridManager : MonoBehaviour
             return GetCellData(0, _height / 2);
         }
     }
-    public bool CanEnter(int x,int z)
+    public bool CanEnter(int x, int z)
     {
         return true;
     }

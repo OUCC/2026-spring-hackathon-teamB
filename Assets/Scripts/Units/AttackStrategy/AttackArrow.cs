@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+
 using UnityEngine;
 
 public class AttackArrow : IAttackStrategy
@@ -57,6 +58,7 @@ public class AttackArrow : IAttackStrategy
             return;
         }
 
+        var attackAnimation = source.GetComponentInChildren<IAttackAnimation>();
         Vector3 sourcePos = source.transform.position;
 
         foreach (var target in _currentTargets)
@@ -67,6 +69,10 @@ public class AttackArrow : IAttackStrategy
             if (distance > _attackRange) continue;
 
             shooter.Shoot(target.GetTargetPosition(), _attackDamage, 1);
+            if (attackAnimation != null)
+            {
+                attackAnimation.AttackAnimation(_cooldownTime, Quaternion.LookRotation(target.gameObject.transform.position - source.transform.position).normalized);
+            }
 
             Debug.Log($"[AttackArrow] Shoot success! source={source.name}, target={target}, damage={_attackDamage}, distance={distance}");
 

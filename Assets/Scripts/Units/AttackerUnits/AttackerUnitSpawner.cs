@@ -177,7 +177,14 @@ public class AttackerUnitSpawner : MonoBehaviour
         var unitInstance = Instantiate(attackerUnitData.Prefab, position, Quaternion.identity);
         unitInstance.transform.localScale = new Vector3(attackerUnitData.Scale, attackerUnitData.Scale, attackerUnitData.Scale);
 
-        var attackerUnitInstance = unitInstance.AddComponent<BasicAttackerUnit>();
+        var attackerUnitInstance = unitInstance.GetComponentInChildren<BasicAttackerUnit>();
+
+        if (attackerUnitInstance == null)
+        {
+            Debug.LogError($"Prefab {attackerUnitData.Prefab.name} does not have a BasicAttackerUnit component in its children.");
+            return null;
+        }
+
 
         _coolDownRemaining[attackerUnitData.UnitName] = attackerUnitData.SummonCoolTime;
         _activeUnitCount[attackerUnitData.UnitName]++;

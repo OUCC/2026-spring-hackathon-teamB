@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class AttackerAnimation : MonoBehaviour, IAttackableAnimation
+public class AttackerAnimation : MonoBehaviour, IAttackAnimation
 {
     [SerializeField]
     private GameObject _normal;
@@ -21,7 +21,7 @@ public class AttackerAnimation : MonoBehaviour, IAttackableAnimation
         _normal.SetActive(true);
     }
 
-    public void AttackAnimation(int flames)
+    public void AttackAnimation(int flames, Quaternion _)
     {
         if (flames <= 0) return;
 

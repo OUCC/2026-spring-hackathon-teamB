@@ -4,10 +4,25 @@ using UnityEngine;
 
 public class CellData
 {
-    [System.Obsolete("�񐄏��v���p�e�B�ł��B CellData.X�y��CellData.Z���g�p���Ă��������B")]
+    [System.Obsolete("非推奨プロパティです。 CellData.X及びCellData.Zを使用してください。")]
     public Vector2Int Coordinates { get { return new(X, Z); } }
-    public bool IsOccupied => PlacedObject != null || HasDirectionTile;
-    public GameObject PlacedObject { get; set; }
+    public bool IsOccupied => PlacedObject != null;
+
+    private GameObject _placedObject;
+    public GameObject PlacedObject
+    {
+        get { return _placedObject; }
+        set
+        {
+
+            _placedObject = value;
+            PlacedDefenderUnit = _placedObject != null ? _placedObject.GetComponent<BasicDefencerUnit>() : null;
+            OnCellDataChanged?.Invoke(this);
+        }
+    }
+
+    public BasicDefencerUnit PlacedDefenderUnit { get; private set; }
+
 
     public PlaceableItemSO _itemType;
     public PlaceableItemSO ItemType
@@ -18,7 +33,7 @@ public class CellData
             if (_itemType != value)
             {
                 _itemType = value;
-                OnCellDataChanged?.Invoke();
+                OnCellDataChanged?.Invoke(this);
             }
         }
     }
@@ -44,7 +59,9 @@ public class CellData
 
     public int X { get; private set; }
     public int Z { get; private set; }
+    public CellData NextCellToCastle { get; set; }
 
+    public event Action<CellData> OnCellDataChanged;
     private CellData _nextCellToCastle;
     public CellData NextCellToCastle
     {
@@ -58,8 +75,6 @@ public class CellData
             }
         }
     }
-
-    public event Action OnCellDataChanged;
 
     private bool _hasDirectionTile;
     public bool HasDirectionTile

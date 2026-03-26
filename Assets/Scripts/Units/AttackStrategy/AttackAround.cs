@@ -46,7 +46,7 @@ public class AttackAround : IAttackStrategy
             return;
         }
 
-        source.GetComponentInChildren<IAttackableAnimation>()?.AttackAnimation(_cooldownTime);
+        var attackAnimation = source.GetComponentInChildren<IAttackAnimation>();
 
         Vector3 sourcePos = source.transform.position;
 
@@ -60,6 +60,7 @@ public class AttackAround : IAttackStrategy
             if (target is IDamageable damageable)
             {
                 damageable.TakeDamage(_attackDamage);
+                attackAnimation?.AttackAnimation(_cooldownTime, Quaternion.LookRotation((target.gameObject.transform.position - source.transform.position).normalized));
                 Debug.Log($"[AttackAround] Attack success! source={source.name}, target={target}, damage={_attackDamage}, distance={distance}");
                 _remainingCooldown = _cooldownTime;
                 return;
