@@ -94,7 +94,9 @@ public class GridManager : MonoBehaviour
 
                 _visualGrid[x, z] = cell;
                 _logicalGrid[x, z] = new CellData(x, z, cell);
+
                 cell.CellData = _logicalGrid[x, z];
+                _logicalGrid[x, z].OnCellDataChanged += (_) => CalcDirectionToCell(x, z);
             }
         }
 
@@ -341,6 +343,6 @@ public class GridManager : MonoBehaviour
     }
     public bool CanEnter(int x, int z)
     {
-        return true;
+        return _logicalGrid[x, z].CanEnter;
     }
 }

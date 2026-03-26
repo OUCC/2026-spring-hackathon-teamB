@@ -90,12 +90,21 @@ public class GroundToCastle : IMoveStrategy
         UpdateDestination(nextCell, movable);
     }
 
+    private CellData _currentDestinationCell;
+    private Action<CellData> _currentAction;
     private void UpdateDestination(CellData destinationCell, IMovable movable)
     {
+        if (_currentDestinationCell != null && _currentAction != null)
+        {
+            _currentDestinationCell.OnCellDataChanged -= _currentAction;
+        }
+        _currentDestinationCell = destinationCell;
+
         var destinationCellPosition = destinationCell.GridCell.transform.position;
         destinationCellPosition.y = movable.transform.position.y; // y座標は変えない
         _destination = destinationCellPosition;
-        destinationCell.OnCellDataChanged += (_) => HandleUnreachableDestination(movable);
+        _currentAction = (_) => HandleUnreachableDestination(movable);
+        destinationCell.OnCellDataChanged += _currentAction;
     }
 
     private void HandleUnreachableDestination(IMovable movable)
@@ -112,22 +121,13 @@ public class GroundToCastle : IMoveStrategy
 
     private GridCell GetBelowGridCell(Transform transform)
     {
-        Ray ray = new(transform.position, Vector3.down);
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, GROUND_LAYER))
-        {
-            if (hit.collider.TryGetComponent(out GridCell gridCell))
+        if (GameManager.Instance.GridManager.TryGetGridCellFromWorld(transform.position, out var cell))
             {
-                return gridCell;
-            }
-            else
-            {
-                Debug.LogError("Ground layer should have GridCell component.");
-                return null;
-            }
+            return cell;
         }
         else
         {
-            Debug.LogError($"Could not find ground(which can be found by layer:{GROUND_LAYER}) below the unit.");
+            Debug.LogError("Failed to get grid cell from world position");
             return null;
         }
     }
