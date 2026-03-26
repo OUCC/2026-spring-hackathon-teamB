@@ -430,7 +430,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BasicDefencerUnit
   unitData: {fileID: 0}
-  arrowPrefab: {fileID: 0}
+  arrowPrefab: {fileID: 6317432890076561308, guid: dfd877092b18df24eb4bc1511fb3b703, type: 3}
   firePoint: {fileID: 0}
   projectileSpeed: 1
 --- !u!114 &981974334890135083
@@ -445,4 +445,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4894b5ee9a2cf6d41b648e9655388dd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DefenderArcherAnimation
-  Archer: {fileID: 1778623457998155800}
+  _archer: {fileID: 1778623457998155800}
