@@ -16,10 +16,8 @@ MonoBehaviour:
   Prefab: {fileID: 8376791783359792186, guid: 8562c5541d9abc5408ab90b3d88d8c23, type: 3}
   IsWall: 1
   MaxHealth: 100
-  AttackRange: 4
-  AttackCoolTime: 60
-  AttackDamage: 5
   SummonCost: 100
   SummonCoolTime: 240
   SummonLimit: 0
   AutoHealAmount: 0
+  AttackStrategyData: {fileID: 11400000, guid: 9bbc6a0011494ca46a8a5698bd977a05, type: 2}
