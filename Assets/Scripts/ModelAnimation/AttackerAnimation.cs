@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class AttackerAnimation : MonoBehaviour, IAttackableAnimation
+public class AttackerAnimation : MonoBehaviour, IAttackAnimation
 {
     [SerializeField]
     private GameObject _normal;

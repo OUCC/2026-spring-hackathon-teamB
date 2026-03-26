@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1907602497881885792}
   - component: {fileID: 8979109429923317742}
+  - component: {fileID: 6818109608296228089}
   m_Layer: 0
   m_Name: ashigaru
   m_TagString: Untagged
@@ -48,6 +49,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AshigaruAnimation
   _normal: {fileID: 4609277925366012244}
   _attacking: {fileID: 828104759020194672}
+--- !u!114 &6818109608296228089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5307881903214268865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca718faf905360f4a81b715ebaf84274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BasicAttackerUnit
+  unitData: {fileID: 0}
 --- !u!1001 &558284957147510305
 PrefabInstance:
   m_ObjectHideFlags: 0

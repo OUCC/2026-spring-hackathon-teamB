@@ -1,6 +1,6 @@
 ﻿using UnityEngine.UIElements;
 
-public interface IAttackableAnimation
+public interface IAttackAnimation
 {
     /// <summary>
     /// 攻撃アニメーションを再生する

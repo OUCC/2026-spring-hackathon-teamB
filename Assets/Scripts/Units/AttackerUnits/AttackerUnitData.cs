@@ -20,7 +20,7 @@ public class AttackerUnitData : ScriptableObject
     {
         get
         {
-            var animation = Prefab.GetComponent<IAttackableAnimation>();
+            var animation = Prefab.GetComponent<IAttackAnimation>();
             if (animation != null)
             {
                 return animation.UnitImage;

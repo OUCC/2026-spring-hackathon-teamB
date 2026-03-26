@@ -46,7 +46,7 @@ public class AttackAround : IAttackStrategy
             return;
         }
 
-        source.GetComponentInChildren<IAttackableAnimation>()?.AttackAnimation(_cooldownTime);
+        source.GetComponentInChildren<IAttackAnimation>()?.AttackAnimation(_cooldownTime);
 
         Vector3 sourcePos = source.transform.position;
 
