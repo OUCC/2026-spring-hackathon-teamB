@@ -175,11 +175,14 @@ public class AttackerUnitSpawner : MonoBehaviour
 
 
         var unitInstance = Instantiate(attackerUnitData.Prefab, position, Quaternion.identity);
+        unitInstance.transform.localScale = new Vector3(attackerUnitData.Scale, attackerUnitData.Scale, attackerUnitData.Scale);
+
+        var attackerUnitInstance = unitInstance.AddComponent<BasicAttackerUnit>();
 
         _coolDownRemaining[attackerUnitData.UnitName] = attackerUnitData.SummonCoolTime;
         _activeUnitCount[attackerUnitData.UnitName]++;
 
-        unitInstance.OnDied += _ =>
+        attackerUnitInstance.OnDied += _ =>
         {
             _activeUnitCount[attackerUnitData.UnitName]--;
         };
@@ -202,8 +205,8 @@ public class AttackerUnitSpawner : MonoBehaviour
            ? attackerUnitData.AttackStrategy.CreateInstance()
            : null;
 
-        unitInstance.Initialize(attackerUnitData, moveStrategy, attackStrategy);
+        attackerUnitInstance.Initialize(attackerUnitData, moveStrategy, attackStrategy);
 
-        return unitInstance;
+        return attackerUnitInstance;
     }
 }

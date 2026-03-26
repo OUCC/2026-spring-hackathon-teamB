@@ -57,6 +57,7 @@ public class GroundToCastle : IMoveStrategy
         {
             diff.y = 0; // y座標は変えない
             movable.transform.position += diff.normalized * moveDistance;
+            movable.transform.rotation = Quaternion.LookRotation(diff.normalized);
             return;
         }
         else
