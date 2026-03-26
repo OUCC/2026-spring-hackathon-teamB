@@ -363,7 +363,7 @@ public class GridManager : MonoBehaviour
     {
         int x = cellData.X;
         int z = cellData.Z;
-        cellData.OnCellDataChanged += () => UpdateDirectionIndicator(x, z);
+        cellData.OnCellDataChanged += (_) => UpdateDirectionIndicator(x, z);
     }
 
     private void RefreshDirectionIndicators()

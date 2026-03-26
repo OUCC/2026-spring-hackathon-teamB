@@ -59,7 +59,6 @@ public class CellData
 
     public int X { get; private set; }
     public int Z { get; private set; }
-    public CellData NextCellToCastle { get; set; }
 
     public event Action<CellData> OnCellDataChanged;
     private CellData _nextCellToCastle;
@@ -71,7 +70,7 @@ public class CellData
             if (_nextCellToCastle != value)
             {
                 _nextCellToCastle = value;
-                OnCellDataChanged?.Invoke();
+                OnCellDataChanged?.Invoke(this);
             }
         }
     }
@@ -85,7 +84,7 @@ public class CellData
             if (_hasDirectionTile != value)
             {
                 _hasDirectionTile = value;
-                OnCellDataChanged?.Invoke();
+                OnCellDataChanged?.Invoke(this);
             }
         }
     }
@@ -99,7 +98,7 @@ public class CellData
             if (_direction != value)
             {
                 _direction = value;
-                OnCellDataChanged?.Invoke();
+                OnCellDataChanged?.Invoke(this);
             }
         }
     }
@@ -113,7 +112,7 @@ public class CellData
             if (_directionTileRemainingUses != value)
             {
                 _directionTileRemainingUses = value;
-                OnCellDataChanged?.Invoke();
+                OnCellDataChanged?.Invoke(this);
             }
         }
     }
