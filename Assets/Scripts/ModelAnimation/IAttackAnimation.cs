@@ -1,4 +1,5 @@
-﻿using UnityEngine.UIElements;
+﻿using UnityEngine;
+using UnityEngine.UIElements;
 
 public interface IAttackAnimation
 {
@@ -6,7 +7,7 @@ public interface IAttackAnimation
     /// 攻撃アニメーションを再生する
     /// </summary>
     /// <param name="flames">再生する時間</param>
-    void AttackAnimation(int flames);
+    void AttackAnimation(int flames, Quaternion quaternion);
 
     Image UnitImage { get; }
 }
