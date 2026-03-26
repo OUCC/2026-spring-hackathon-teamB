@@ -256,7 +256,7 @@ GameObject:
   - component: {fileID: 5548919031972441822}
   - component: {fileID: 8437652280801386734}
   m_Layer: 0
-  m_Name: kabe
+  m_Name: wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
