@@ -2,167 +2,82 @@ using UnityEngine;
 
 public class DirectionTileSpawner : MonoBehaviour
 {
-    public enum SpawnMode
-    {
-        Place,
-        Remove
-    }
-
-    public enum DirectionType
-    {
-        Right,
-        Left,
-        Up,
-        Down
-    }
+    public enum DirectionType { Right, Left, Up, Down }
 
     [Header("Reference")]
     [SerializeField] private GridManager gridManager;
 
-    [Header("Target Cell")]
-    [SerializeField] private int x = 2;
-    [SerializeField] private int z = 1;
-
-    [Header("Tile Setting")]
-    [SerializeField] private SpawnMode spawnMode = SpawnMode.Place;
-    [SerializeField] private DirectionType directionType = DirectionType.Down;
-    [SerializeField] private int uses = 3;
-
-    [Header("Execution")]
-    [SerializeField] private bool executeOnStart = true;
-
-    private void Start()
+    private void Awake()
     {
-        if (executeOnStart)
-        {
-            Execute();
-        }
+        if (gridManager == null)
+            gridManager = FindFirstObjectByType<GridManager>();
     }
 
-    [ContextMenu("Execute")]
-    public void Execute()
+    public enum PlaceCheckResult { Ok, NotEnoughMoney, CellNotFound, CellAlreadyOccupied }
+
+    public PlaceCheckResult CheckPlace(int x, int z, int cost)
     {
-        if (!TryGetGridManager(out GridManager gm))
-            return;
+        if (GameManager.Instance.DefenseMoney < cost) 
+            return PlaceCheckResult.NotEnoughMoney;
 
-        if (!TryGetCell(gm, x, z, out CellData cell))
-            return;
+        CellData cell = gridManager?.GetCellData(x, z);
+        if (cell == null) 
+            return PlaceCheckResult.CellNotFound;
 
-        if (spawnMode == SpawnMode.Remove)
-        {
-            RemoveDirectionTile(cell);
-            Debug.Log($"[DirectionTileSpawner] Removed direction tile at ({x}, {z})");
-            return;
-        }
+        if (cell.HasDirectionTile) 
+            return PlaceCheckResult.CellAlreadyOccupied;
 
-        Vector2Int dir = ToVector(directionType);
-        if (dir == Vector2Int.zero)
-        {
-            Debug.LogError("[DirectionTileSpawner] Invalid direction.");
-            return;
-        }
-
-        int safeUses = Mathf.Max(1, uses);
-
-        PlaceDirectionTile(cell, dir, safeUses);
-
-        Debug.Log(
-            $"[DirectionTileSpawner] Placed direction tile at ({x}, {z}), " +
-            $"dir={dir}, uses={safeUses}"
-        );
+        return PlaceCheckResult.Ok;
     }
 
-    private bool TryGetGridManager(out GridManager gm)
+    // 外部（PlayerCursorController）から呼ばれるメインの配置メソッド
+    public bool Spawn(Vector3 position, DirectionType dirType, int cost, int uses = 3)
     {
-        gm = gridManager;
+        int x = Mathf.RoundToInt(position.x);
+        int z = Mathf.RoundToInt(position.z);
 
-        if (gm == null)
+        // 1. 配置可能かチェック
+        switch (CheckPlace(x, z, cost))
         {
-            gm = FindFirstObjectByType<GridManager>();
+            case PlaceCheckResult.NotEnoughMoney:
+                Debug.LogWarning($"タイルを配置する資金({cost})が不足しています。");
+                return false;
+            case PlaceCheckResult.CellNotFound:
+                Debug.LogWarning($"座標 ({x}, {z}) にセルが見つかりません。");
+                return false;
+            case PlaceCheckResult.CellAlreadyOccupied:
+                Debug.LogWarning($"座標 ({x}, {z}) には既にタイルが配置されています。");
+                return false;
         }
 
-        if (gm == null)
+        // 2. 資金消費
+        if (!GameManager.Instance.SpendMoney(GameManager.TeamType.Defense, cost))
         {
-            Debug.LogError("[DirectionTileSpawner] GridManager not found.");
             return false;
         }
 
+        // 3. データの書き込み（GridManagerが検知して自動で矢印モデルを出してくれます！）
+        CellData cell = gridManager.GetCellData(x, z);
+        cell.Direction = ToVector(dirType);
+        cell.DirectionTileRemainingUses = uses;
+        
+        // HasDirectionTile を true にすると、OnCellDataChanged が発火し、
+        // GridManager.UpdateDirectionIndicator が呼ばれて矢印が生成される
+        cell.HasDirectionTile = true; 
+
+        Debug.Log($"[DirectionTileSpawner] Placed '{dirType}' tile at ({x}, {z})");
         return true;
-    }
-
-    private bool TryGetCell(GridManager gm, int cellX, int cellZ, out CellData cell)
-    {
-        cell = null;
-
-        if (gm == null)
-        {
-            Debug.LogError("[DirectionTileSpawner] GridManager is null.");
-            return false;
-        }
-
-        cell = gm.GetCellData(cellX, cellZ);
-
-        if (cell == null)
-        {
-            Debug.LogError($"[DirectionTileSpawner] CellData not found at ({cellX}, {cellZ}).");
-            return false;
-        }
-
-        return true;
-    }
-
-    private void PlaceDirectionTile(CellData cell, Vector2Int dir, int tileUses)
-    {
-        if (cell == null)
-        {
-            Debug.LogError("[DirectionTileSpawner] CellData is null in PlaceDirectionTile.");
-            return;
-        }
-
-        cell.Direction = dir;
-        cell.DirectionTileRemainingUses = tileUses;
-        cell.HasDirectionTile = true;
-    }
-
-    private void RemoveDirectionTile(CellData cell)
-    {
-        if (cell == null)
-        {
-            Debug.LogError("[DirectionTileSpawner] CellData is null in RemoveDirectionTile.");
-            return;
-        }
-
-        cell.HasDirectionTile = false;
-        cell.Direction = Vector2Int.zero;
-        cell.DirectionTileRemainingUses = 0;
     }
 
     private Vector2Int ToVector(DirectionType type)
     {
-        switch (type)
+        return type switch
         {
-            case DirectionType.Right:
-                return new Vector2Int(1, 0);
-            case DirectionType.Left:
-                return new Vector2Int(-1, 0);
-            case DirectionType.Up:
-                return new Vector2Int(0, 1);
-            case DirectionType.Down:
-                return new Vector2Int(0, -1);
-            default:
-                return Vector2Int.zero;
-        }
-    }
-    // 外部のスクリプトから呼び出してタイルを配置するための専用メソッド
-    public void PlaceTileFromExternal(int targetX, int targetZ, DirectionType dir)
-    {
-        // 自分の変数を上書きする
-        this.x = targetX;
-        this.z = targetZ;
-        this.directionType = dir;
-        this.spawnMode = SpawnMode.Place;
-
-        // 既存の配置ロジックを実行する
-        Execute();
+            DirectionType.Right => new Vector2Int(1, 0),
+            DirectionType.Left => new Vector2Int(-1, 0),
+            DirectionType.Up => new Vector2Int(0, 1),
+            DirectionType.Down => new Vector2Int(0, -1),
+            _ => Vector2Int.zero,
+        };
     }
 }

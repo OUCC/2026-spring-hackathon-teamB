@@ -14,6 +14,8 @@ public class DefencerUnitListUI : MonoBehaviour
     [SerializeField] private VisualTreeAsset unitCardTemplate;
     [SerializeField] private DefencerUnitSpawner defencerSpawner; 
 
+    [SerializeField] private DirectionTileSpawner directionTileSpawner;
+
     // [変更点1] DefencerUnitData のリストから、共通の箱のリストに変更
     private List<DefenderUIObject> defenderUIObjects = new();
 
@@ -35,11 +37,11 @@ public class DefencerUnitListUI : MonoBehaviour
     }
 
     // [変更点2] ユニットとタイルの両方をリストに詰める
-    private void FetchData()
+   private void FetchData()
     {
         defenderUIObjects.Clear();
 
-        // 1. 防衛ユニットのデータを箱（DefenderUIObject）に変換して追加
+        // 1. 防衛ユニットを追加（既存のまま）
         if (defencerSpawner != null)
         {
             var unitObjects = defencerSpawner.DefencerUnitData.Select(d => new DefenderUIObject
@@ -47,33 +49,29 @@ public class DefencerUnitListUI : MonoBehaviour
                 name = d.UnitName,
                 summonCost = d.SummonCost,
                 type = ItemType.Unit,
-                unitData = d // 後で配置できるように元のデータを保持
+                unitData = d 
             });
             defenderUIObjects.AddRange(unitObjects);
         }
-        else
-        {
-            Debug.LogError("DefencerSpawner がインスペクターで設定されていません！");
-        }
 
-        // 2. 方向タイルのデータを手動で追加（例として右と上を追加）
-        // ※コストは仮で50にしています。ゲームバランスに合わせて調整してください。
-        defenderUIObjects.Add(new DefenderUIObject
-        {
-            name = "Right Tile",
-            summonCost = 50,
-            type = ItemType.Tile,
-            tileDirection = DirectionTileSpawner.DirectionType.Right
-        });
-
-        defenderUIObjects.Add(new DefenderUIObject
-        {
-            name = "Up Tile",
-            summonCost = 50,
-            type = ItemType.Tile,
-            tileDirection = DirectionTileSpawner.DirectionType.Up
-        });
+        // 2. 方向タイルを手動ですべて追加
+        AddTileData("Right Tile", DirectionTileSpawner.DirectionType.Right);
+        AddTileData("Up Tile", DirectionTileSpawner.DirectionType.Up);
+        AddTileData("Left Tile", DirectionTileSpawner.DirectionType.Left);  // 追加！
+        AddTileData("Down Tile", DirectionTileSpawner.DirectionType.Down); // 追加！
     }
+
+// コードが長くなるのを防ぐための補助的な書き方（任意）
+    private void AddTileData(string label, DirectionTileSpawner.DirectionType dir)
+{
+    defenderUIObjects.Add(new DefenderUIObject
+    {
+        name = label,
+        summonCost = 50, // コストは共通で50に設定
+        type = ItemType.Tile,
+        tileDirection = dir
+    });
+}
 
     private void OnDisable()
     {

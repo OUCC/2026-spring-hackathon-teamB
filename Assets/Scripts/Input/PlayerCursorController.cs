@@ -201,17 +201,11 @@ public class PlayerCursorController : MonoBehaviour
             }
             else if (selectedObj.type == ItemType.Tile)
             {
-                // --- タイルだった場合の処理 ---
+                // タイルだった場合
                 if (_directionTileSpawner != null)
                 {
-                    // 新しく作った専用のメソッドに、座標と向きを渡して実行させる
-                    _directionTileSpawner.PlaceTileFromExternal(gridPos.x, gridPos.y, selectedObj.tileDirection);
-
-                    Debug.Log($"[Defense] 方向タイル '{selectedObj.name}' を配置しました");
-                }
-                else
-                {
-                    Debug.LogError("DirectionTileSpawner が設定されていません！");
+                    // スポナーに座標、向き、そしてUIで設定したコストを渡す
+                    _directionTileSpawner.Spawn(transform.position, selectedObj.tileDirection, selectedObj.summonCost);
                 }
             }
         }
