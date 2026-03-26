@@ -70,5 +70,7 @@ public class CellData
         GridCell = gridCell;
     }
 
+    public bool CanEnter => PlacedDefenderUnit == null;
+
     public Vector3 DirectionToNextCell => NextCellToCastle != null ? (NextCellToCastle.GridCell.transform.position - GridCell.transform.position).normalized : Vector3.zero;
 }
