@@ -54,6 +54,10 @@ public class GridManager : MonoBehaviour
             UnityEditor.EditorApplication.delayCall += () =>
             {
                 if (this == null) return;
+                if (Application.isPlaying)
+                {
+                    return;
+                }
                 GenerateGrid();
             };
 #endif
@@ -292,7 +296,7 @@ public class GridManager : MonoBehaviour
     {
         if (_logicalGrid == null) return;
         CellData castleCell = Castle;
-        /*for(int i = 0; i < _width; i++)
+        for(int i = 0; i < _width; i++)
         {
             for(int j=0; j< _height; j++)
             {
@@ -300,7 +304,6 @@ public class GridManager : MonoBehaviour
             }
             
         }
-        */
         Queue<CellData> queue = new Queue<CellData>();
         queue.Enqueue(castleCell);
         int[,] directions =

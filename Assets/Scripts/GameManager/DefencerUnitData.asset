@@ -13,12 +13,11 @@ MonoBehaviour:
   m_Name: DefencerUnitData
   m_EditorClassIdentifier: Assembly-CSharp::DefencerUnitData
   UnitName: yattyo
-  Prefab: {fileID: 1107247361633539337, guid: 0f7d0d8b9c2af8846aacb7c8b71a4079, type: 3}
+  Prefab: {fileID: 917914602696894799, guid: 0f7d0d8b9c2af8846aacb7c8b71a4079, type: 3}
+  IsWall: 1
   MaxHealth: 10
-  AttackRange: 2
-  AttackCoolTime: 2
-  AttackDamage: 2
   SummonCost: 1
   SummonCoolTime: 1
   SummonLimit: 1
   AutoHealAmount: 1
+  AttackStrategyData: {fileID: 11400000, guid: d71f4f42faedfcf4f8e7e6da0bc12aac, type: 2}
