@@ -2,8 +2,11 @@ using UnityEngine;
 
 public class Arrow : MonoBehaviour, IProjectile
 {
+    private const float BoardMargin = 1f;
+
     private IShootable _source;
     private Vector3 _target;
+    private Vector3 _direction;
     private float _speed;
     private int _damageAmount;
     private int _attackCount;
@@ -15,6 +18,9 @@ public class Arrow : MonoBehaviour, IProjectile
         _speed = speed;
         _damageAmount = damageAmount;
         _attackCount = attackCount;
+
+        Vector3 diff = _target - transform.position;
+        _direction = diff.sqrMagnitude > Mathf.Epsilon ? diff.normalized : Vector3.zero;
 
         GameManager.Instance.OnTickEvent += Move;
     }
@@ -37,18 +43,19 @@ public class Arrow : MonoBehaviour, IProjectile
 
     public void Move()
     {
-        Vector3 diff = _target - transform.position;
-        float distance = diff.magnitude;
-
-        if (distance <= _speed)
+        if (_direction == Vector3.zero)
         {
-            transform.position = _target;
-            Hit();
+            Die();
             return;
         }
 
-        Vector3 direction = diff.normalized;
-        transform.position += direction * _speed;
+        transform.position += _direction * _speed;
+        Hit();
+
+        if (IsOutsideBoard())
+        {
+            Die();
+        }
     }
 
     public void Die()
@@ -64,12 +71,34 @@ public class Arrow : MonoBehaviour, IProjectile
         {
             IDamageable damageable = hit.GetComponent<IDamageable>();
             if (damageable == null) continue;
+            if (_source is Component sourceComponent && hit.transform.IsChildOf(sourceComponent.transform)) continue;
 
             damageable.TakeDamage(_damageAmount);
             ReduceAttackCount();
             break;
         }
 
-        Die();
+        if (_attackCount <= 0)
+        {
+            Die();
+        }
+    }
+
+    private bool IsOutsideBoard()
+    {
+        GridManager gridManager = GameManager.Instance != null ? GameManager.Instance.GridManager : null;
+        if (gridManager == null)
+        {
+            return false;
+        }
+
+        float halfCellSize = gridManager.CellSize * 0.5f;
+        float minX = -halfCellSize - BoardMargin;
+        float maxX = ((gridManager.Width - 1) * gridManager.CellSize) + halfCellSize + BoardMargin;
+        float minZ = -halfCellSize - BoardMargin;
+        float maxZ = ((gridManager.Height - 1) * gridManager.CellSize) + halfCellSize + BoardMargin;
+
+        Vector3 position = transform.position;
+        return position.x < minX || position.x > maxX || position.z < minZ || position.z > maxZ;
     }
 }
